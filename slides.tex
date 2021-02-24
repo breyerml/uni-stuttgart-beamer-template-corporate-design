@@ -1,0 +1,171 @@
+% !TeX spellcheck = en_US
+% !TeX encoding = utf8
+% !TeX program = lualatex
+
+
+\documentclass[8pt, t, usernames, dvipsnames, 
+aspectratio=169,% for widescreen (16:9) presentations
+%aspectratio=43,% for traditional (4:3) presentations
+%handout%
+]{beamer}
+
+
+% CUSTOM INCLUDES
+% language and encodings
+\usepackage[english]{babel}
+
+% TikZ
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows.meta, positioning, overlay-beamer-styles, decorations}
+
+% minted
+\usepackage{minted}
+\setminted{
+	linenos,%
+	tabsize=3,%
+}
+\newcommand{\cppinline}[1]{\mintinline[breaklines]{c++}{#1}}
+
+% SIunitx
+\usepackage[free-standing-units]{siunitx}
+\sisetup{
+	per-mode=symbol,%
+	binary-units=true,%
+}
+
+% misc
+\usepackage{appendixnumberbeamer}
+\usepackage{booktabs}
+\usepackage{csquotes}
+\usepackage{iftex}
+\usepackage{makecell}
+\usepackage{multirow}
+\usepackage{todonotes}
+\usepackage{xcolor}
+\usepackage{xspace}
+
+\newcommand{\cpp}[1][]{\texttt{C++#1}\xspace}
+\newcommand{\includeplot}[1]{%
+	\ifluatex
+	\resizebox{\textwidth}{!}{\input{#1.pgf}}
+	\else
+	\includegraphics[width=\textwidth]{#1.pdf}
+	\fi
+}
+
+\makeatletter
+\newcommand\changemode[1]{%
+	\gdef\beamer@currentmode{#1}}
+\makeatother
+
+\usepackage{biblatex}
+\IfFileExists{bibliography.bib}{
+	\addbibresource{bibliography.bib}
+}{}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% mode options %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mode<presentation>{\usetheme{uniS}}
+
+% define a few pictures used throughout the slides
+\pgfdeclareimage[height=1.1\paperheight]{background}{figures/bg.jpg}  % background picture for title slide
+\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo.pdf} % UniS logo for title slide
+\pgfdeclareimage[height=1cm]{unilogow}{.logos/unilogo_w.pdf} % (white) UniS logo for final slide
+% TODO: add speaker image
+\pgfdeclareimage[width=2.5cm]{speaker}{figures/speaker.pdf} % speaker photo for final slide
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% misc stuff %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% automatically display \sectionpage at beginning of every \section{}
+\AtBeginSection[]{%
+\begin{frame}[plain]
+  \sectionpage
+\end{frame}
+% uncomment block in order to display toc after every sectionpage
+%\usepackage{multicol}
+%\begin{frame}[c, plain]
+%  \begin{footnotesize}
+%    \begin{center}
+%      \begin{minipage}{.75\textwidth}
+%        \begin{multicols}{2}
+%          \tableofcontents[currentsection]
+%        \end{multicols}
+%      \end{minipage}
+%    \end{center}
+%  \end{footnotesize}
+%\end{frame}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TODO: customize
+\title[Title footer]{Title}
+\author[Author footer]{Author}
+\institute{University of Stuttgart, IPVS, SGS/SC}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% slides %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+	
+    % TITLE + TABLE OF CONTENTS
+	\begin{frame}[plain]
+		\titlepage
+	\end{frame}
+	\begin{frame}{Overview}
+		\tableofcontents
+	\end{frame}
+	
+	% CONTENT
+	\input{content/content}
+	% TODO: add content
+	
+	% FINAL SLIDE + APPENDIX
+	% TODO: customize
+	\finalslide{Email}{Phone number}{Fax number}
+	\appendix
+	\IfFileExists{content/appendix.tex}{
+		\input{content/appendix}
+	}{}
+	\IfFileExists{bibliography.bib}{
+		\begin{frame}{References}
+			\renewcommand*{\bibfont}{\tiny}
+			\printbibliography
+		\end{frame}
+	}{}
+
+%\section{Einführung}
+%
+%\begin{frame}{Corporate Design-Folien}
+%  \begin{columns}[c]
+%    \begin{column}{.7\textwidth}
+%      \begin{itemize}
+%        \item Farben, Schriften und Formate gemäß Corporate Design vordefiniert
+%        \item Basiert auf der \LaTeX Beamer-Klasse
+%        \item Vorlage wird in den nächsten Monaten noch weiterentweickelt
+%        \item Bilder können bspw. über \texttt{\textbackslash includegraphics} eingebunden werden
+%        \item \enquote{Einbauen} von Formeln wie gewohnt: $e=mc^2$ oder bspw.
+%          \begin{equation*}
+%            \sum_{k=0}^{n-1} ar^k=a\frac{1-r^n}{1-r}
+%          \end{equation*}
+%        \item Beamer-Blöcke können verwendet werden, sind aber \emph{nicht} Corporate Design-konform
+%        \item Einige Hinweise auf weitere Funktionialität im Quelltext von \texttt{example.tex}, bspw.
+%          Umschaltung zwischen 4:3 und 16:9-Format
+%        \item Es müssen die Schriftarten \alert{UniversforUniS65Bd-Regular} und
+%          \alert{UniversforUniS45LtObl-Rg} installiert sein (erhältlich über ILIAS)
+%        \item Übersetzen mit \texttt{xelatex}, ggfs. zweimal
+%      \end{itemize}
+%    \end{column}
+%    \begin{column}{.3\textwidth}
+%      \includegraphics[width=\textwidth]{fig/pdp7.jpg}
+%      
+%    \end{column}
+%  \end{columns}
+%
+%
+%\photocredit{DEC PDP-7 Promo-Material}
+%\end{frame}
+
+\end{document}
