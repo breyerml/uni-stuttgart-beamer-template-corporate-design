@@ -71,8 +71,13 @@ aspectratio=169,% for widescreen (16:9) presentations
 
 % define a few pictures used throughout the slides
 \pgfdeclareimage[height=1.1\paperheight]{background}{figures/bg.jpg}  % background picture for title slide
-\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo.pdf} % UniS logo for title slide
-\pgfdeclareimage[height=1cm]{unilogow}{.logos/unilogo_w.pdf} % (white) UniS logo for final slide
+\iflanguage{ngerman}{
+	\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo.pdf} % UniS logo for title slide
+	\pgfdeclareimage[height=1cm]{unilogow}{.logos/unilogo_w.pdf} % (white) UniS logo for final slide
+}{
+	\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo_en.pdf} % UniS logo for title slide
+	\pgfdeclareimage[height=1cm]{unilogow}{.logos/unilogo_w_en.pdf} % (white) UniS logo for final slide
+}
 % TODO: add speaker image
 \pgfdeclareimage[width=2.5cm]{speaker}{figures/speaker.pdf} % speaker photo for final slide
 
