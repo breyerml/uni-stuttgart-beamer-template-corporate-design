@@ -100,9 +100,15 @@
             \multicolumn{2}{l}{\insertshortauthor}\\
             \multicolumn{2}{l}{\insertinstitute}\\
             \rule{0pt}{4ex}\\
-            email & \href{mailto:#1}{#1}\\
-            phone  & #2\\
-            fax & #3
+            \iflanguage{ngerman}{
+              Email & \href{mailto:#1}{#1}\\
+              Telefon  & #2\\
+              Fax & #3
+            }{
+              email & \href{mailto:#1}{#1}\\
+              phone  & #2\\
+              fax & #3
+        	  }
           \end{tabular}
         \end{beamercolorbox}
       \end{column}
