@@ -3,142 +3,111 @@
 % !TeX program = lualatex
 % !TeX root = slides.tex
 
-\documentclass[8pt, t, usernames, dvipsnames, 
+
+\documentclass[11pt, t, usernames, dvipsnames, 
 aspectratio=169,% for widescreen (16:9) presentations
 %aspectratio=43,% for traditional (4:3) presentations
 %handout%
 ]{beamer}
 
 
-% CUSTOM INCLUDES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% custom packages and commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % language and encodings
 \usepackage[english]{babel}
 
 % TikZ
 \usepackage{tikz}
-\usetikzlibrary{shapes, arrows.meta, positioning, overlay-beamer-styles, decorations}
+\usetikzlibrary{shapes, arrows.meta, positioning, overlay-beamer-styles, decorations.pathreplacing}
 
 % minted
 \usepackage{minted}
 \setminted{
-	linenos,%
-	tabsize=3,%
+	linenos,
+	tabsize=3,
+	fontsize=\small
 }
 \newcommand{\cppinline}[1]{\mintinline[breaklines]{c++}{#1}}
 
 % SIunitx
 \usepackage[free-standing-units]{siunitx}
 \sisetup{
-	per-mode=symbol,%
-	binary-units=true,%
+	per-mode=symbol,
+	binary-units=true,
 }
 
-% misc
+
+
+% Others
 \usepackage{appendixnumberbeamer}
 \usepackage{booktabs}
-\usepackage{csquotes}
 \usepackage{iftex}
+\usepackage{import}
 \usepackage{makecell}
+\usepackage{marvosym}
+\usepackage{multicol}
 \usepackage{multirow}
+\usepackage{pgf}
 \usepackage{todonotes}
+\usepackage{unicode-math}
 \usepackage{xcolor}
 \usepackage{xspace}
 
 \newcommand{\cpp}[1][]{\texttt{C++#1}\xspace}
-\newcommand{\includeplot}[1]{%
-	\ifluatex
-	\resizebox{\textwidth}{!}{\input{#1.pgf}}
-	\else
-	\includegraphics[width=\textwidth]{#1.pdf}
-	\fi
-}
 
 \makeatletter
-\newcommand\changemode[1]{%
-	\gdef\beamer@currentmode{#1}}
+\newcommand{\includepgf}[2][\textwidth]{
+	\begingroup
+	\catcode`\_=12
+	\filename@parse{#2}
+	\resizebox{#1}{!}{\import{\filename@area}{\filename@base.pgf}}
+	\endgroup
+}
 \makeatother
 
-\usepackage{biblatex}
-\IfFileExists{bibliography.bib}{
-	\addbibresource{bibliography.bib}
-}{}
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% mode options %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-\mode<presentation>{\usetheme{uniS}}
-
-% define a few pictures used throughout the slides
-\pgfdeclareimage[height=1.1\paperheight]{background}{figures/bg.jpg}  % background picture for title slide
-\iflanguage{ngerman}{
-	\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo.pdf} % UniS logo for title slide
-	\pgfdeclareimage[height=1cm]{unilogow}{.logos/unilogo_w.pdf} % (white) UniS logo for final slide
-}{
-	\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo_en.pdf} % UniS logo for title slide
-	\pgfdeclareimage[height=1cm]{unilogow}{.logos/unilogo_w_en.pdf} % (white) UniS logo for final slide
+\newcommand{\photocredit}[1]{%
+	\begingroup
+	\renewcommand\thefootnote{}\footnote{\tiny Photo credit: #1}%
+	\addtocounter{footnote}{-1}%
+	\endgroup
 }
-% TODO: add speaker image
-\pgfdeclareimage[width=2.5cm]{speaker}{figures/speaker.pdf} % speaker photo for final slide
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% misc stuff %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% automatically display \sectionpage at beginning of every \section{}
-\AtBeginSection[]{%
-\begin{frame}[plain]
-  \sectionpage
-\end{frame}
-% uncomment block in order to display toc after every sectionpage
-%\usepackage{multicol}
-%\begin{frame}[c, plain]
-%  \begin{footnotesize}
-%    \begin{center}
-%      \begin{minipage}{.75\textwidth}
-%        \begin{multicols}{2}
-%          \tableofcontents[currentsection]
-%        \end{multicols}
-%      \end{minipage}
-%    \end{center}
-%  \end{footnotesize}
-%\end{frame}
-}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\mode<presentation>{\usetheme{uniS}}
+
 % TODO: customize
 \title[Title footer]{Title}
 \author[Author footer]{Author}
-\institute{University of Stuttgart, IPVS, SGS/SC}
+\institute{IPVS, SGS/SC}
+%\def\speakerimage{figures/speaker.jpg}
+%\def\backgroundimage{figures/bg.jpg}
+%\def\bibresource{bibliography.bib}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% slides %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 	
     % TITLE + TABLE OF CONTENTS
-	\begin{frame}[plain]
-		\titlepage
-	\end{frame}
-	\begin{frame}{Overview}
-		\tableofcontents
-	\end{frame}
+	\titleslide
+	\tocslide    % optional: [frametitle]
+	
+	
 	
 	% CONTENT
 	\input{content/content}
 	% TODO: add content
 	
+	
+	
 	% FINAL SLIDE + APPENDIX
 	% TODO: customize
-	\finalslide{Email}{Phone number}{Fax number}
-	\appendix
-	\IfFileExists{content/appendix.tex}{
-		\input{content/appendix}
-	}{}
-	\IfFileExists{bibliography.bib}{
-		\begin{frame}{References}
-			\renewcommand*{\bibfont}{\tiny}
-			\printbibliography
-		\end{frame}
-	}{}
+	\finalslide{placeholder@email.de}    % optional: [phone][fax]
+%	\appendixslide{content/appendix.tex}
+%	\bibliographyslide    % optional: [frametitle]
 
 \end{document}

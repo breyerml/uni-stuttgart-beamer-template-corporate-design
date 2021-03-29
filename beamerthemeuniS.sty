@@ -17,7 +17,6 @@
 \usepackage{lmodern}
 \usepackage{fontspec}
 \usepackage{csquotes}
-%\usepackage[utf8]{inputenc}
 \setsansfont[
   BoldFont = UniversforUniS65Bd-Regular,
   ItalicFont = UniversforUniS45LtObl-Rg,
@@ -28,8 +27,6 @@
 \renewcommand{\familydefault}{\sfdefault}
 
 % fix German quotation marks
-%\DeclareUTFcharacter[\UTFencname]{x201C}{\grqq}
-%\DeclareUTFcharacter[\UTFencname]{x201E}{\glqq}
 
 % use fancy enumerate/itemize and restore beamer layout
 \usepackage{enumitem}\setitemize{%
@@ -38,11 +35,22 @@
   \usebeamertemplate{itemize item}
 }
 
+% Biblatex
+\usepackage{biblatex}
+\usepackage{etoolbox}
+\usepackage{xifthen}
+\usepackage{xargs}
 \usepackage{tikz}
 
 \makeatletter
 \def\beamerrightmargin{\dimexpr\Gm@rmargin\relax}
 \makeatother
+
+\makeatletter
+\newcommand\changemode[1]{%
+	\gdef\beamer@currentmode{#1}}
+\makeatother
+
 
 \mode<presentation>
 
@@ -59,19 +67,42 @@
 
 \setbeamertemplate{navigation symbols}{}
 
-\newcommand{\photocredit}[1]{%
-  \begingroup
-  \renewcommand\thefootnote{}\footnote{\tiny Photo credit: #1}%
-  \addtocounter{footnote}{-1}%
-  \endgroup
+
+% define a few pictures used throughout the slides
+\iflanguage{ngerman}{
+	\def\university{Universität Stuttgart}
+	\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo.pdf}    % UniS logo for title slide
+	\pgfdeclareimage[height=1cm]{unilogow}{.logos/unilogo_w.pdf} % (white) UniS logo for final slide
+}{
+	\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo_en.pdf}    % UniS logo for title slide
+	\pgfdeclareimage[height=1cm]{unilogow}{.logos/unilogo_w_en.pdf} % (white) UniS logo for final slide
+	\def\university{University of Stuttgart}
 }
 
-\newcommand{\finalslide}[3]{
+
+% automatically display \sectionpage at beginning of every \section{}
+\AtBeginSection[]{%
+	\begin{frame}[plain]
+		\sectionpage
+	\end{frame}
+	% uncomment block in order to display toc after every sectionpage
+	%\begin{frame}[c, plain]
+	%  \tableofcontents[currentsection]
+	%\end{frame}
+}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% finalslide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommandx{\finalslide}[3][2, 3]{
   \begin{frame}[plain]
     \begin{tikzpicture}[overlay, remember picture]
       \clip (current page.north west) rectangle (current page.south east);
       % uncomment in order to repeat title page background, also uncomment opacity below
-      %\node[anchor=north west] at ([xshift=-1em, yshift=1ex]current page.north west) {\pgfuseimage{background}};
+      %\node[anchor=north west] at ([xshift=-1em, yshift=1ex]current page.north west) {\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\backgroundimage}};
+      
+      % Background
       \shade[%
         top color=uniSlightblue,
         bottom color=uniSblue,
@@ -82,60 +113,113 @@
         \node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogow}};
     \end{tikzpicture}
 
-    \vspace{4cm}
+    \vspace{3.25cm}
 
     \begin{columns}[c]
       \begin{column}{2.5cm}
-
-        \begin{tikzpicture}
-        \node[circle,minimum size=2.5cm, path picture={
-          \node at (path picture bounding box.center){\pgfuseimage{speaker}};}] {};
-        \end{tikzpicture}
+		\ifdef{\speakerimage}{
+			\begin{tikzpicture}
+			\node[circle,minimum size=2.5cm, path picture={
+				\node at (path picture bounding box.center){\includegraphics[width=2.5cm]{\speakerimage}};}] {};
+			\end{tikzpicture}
+		}{}
+        
       \end{column}
       \begin{column}{.7\textwidth}
-
-        \begin{beamercolorbox}%[leftskip=3ex, ht=2em,wd=\paperwidth]
+        \begin{beamercolorbox}
           {palette tertiary}
-          \begin{tabular}{ll}
-            \multicolumn{2}{l}{\insertshortauthor}\\
-            \multicolumn{2}{l}{\insertinstitute}\\
+          \begin{tabular}{rl}
+            \multicolumn{2}{l}{\insertshortauthor} \\
+            \multicolumn{2}{l}{\university, \insertinstitute} \\
             \rule{0pt}{4ex}\\
             \iflanguage{ngerman}{
-              Email & \href{mailto:#1}{#1}\\
-              Telefon  & #2\\
-              Fax & #3
+              Email & \href{mailto:#1}{#1} \\
+              \ifthenelse{\isempty{#2}}{}{
+              Telefon & #2 \\
+          	  }
+              \ifthenelse{\isempty{#3}}{}{
+              Fax & #3 \\
+              }
             }{
-              email & \href{mailto:#1}{#1}\\
-              phone  & #2\\
-              fax & #3
-        	  }
+              email & \href{mailto:#1}{#1} \\
+              \ifthenelse{\isempty{#2}}{}{
+			  phone & #2 \\
+		      }
+			  \ifthenelse{\isempty{#3}}{}{
+			  fax & #3 \\
+			  }
+     	      }
           \end{tabular}
         \end{beamercolorbox}
       \end{column}
     \end{columns}
-
+	\vfill
   \end{frame}
 }
 
-\newlength{\circlesize}
+\newcommand{\appendixslide}[1]{
+	\appendix
+	\input{#1}
+}
 
+\ifdef{\bibresource}{\addbibresource{\bibresource}}{}
+\newcommand{\bibliographyslide}[1][]{
+	\ifdef{\bibresource}{
+		\ifthenelse{\isempty{#1}}{
+			\iflanguage{ngerman}{
+				\def\bibtitle{Quellen}
+			}{
+				\def\bibtitle{References}
+			}
+		}{
+			\def\bibtitle{#1}
+		}
+		\begin{frame}{\bibtitle}
+			\renewcommand*{\bibfont}{\tiny}
+			\printbibliography
+		\end{frame}
+	}{
+		\PackageError{Bibliography Frame}{Can't create bibliography frame since no bib resources are given!}{Please set bibresources to the path of your bibliography file.}
+	}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% title page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newlength{\circlesize}
 \setbeamertemplate{title page}%
 {
+  \addtocounter{framenumber}{-1}
   \setlength{\circlesize}{1.12\textheight}
   \begin{tikzpicture}[overlay, remember picture]
     \clip (current page.north west) rectangle (current page.south east);
-    \node[anchor=north west] at ([xshift=-1em, yshift=1ex]current page.north west)
-    %  {\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{bg.jpg}};
-      {\pgfuseimage{background}};
-    \node[%
-      rectangle,
-      draw=white,
-      fill=white,
-      anchor=north west,
-      minimum width=2\textwidth,
-      minimum height=3cm]
-      at (current page.north west) {};
-    \node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogo}};
+    
+    \ifdef{\backgroundimage}{
+	    % background image
+	    \node[anchor=north west] at ([xshift=-1em, yshift=1ex]current page.north west){\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\backgroundimage}};
+	    
+	    % Uni logo
+	    \node[%
+	    rectangle,
+	    draw=white,
+	    fill=white,
+	    anchor=north west,
+	    minimum width=2\textwidth,
+	    minimum height=3cm]
+	    at (current page.north west) {};
+	    \node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogo}};
+	}{
+		\shade[%
+		top color=uniSlightblue,
+		bottom color=uniSblue,
+		shading angle=-45,
+		%opacity=.8
+		]
+		(current page.north west) rectangle (current page.south east);
+		\node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogow}};
+	}
+    
+    % Title
     \node[%
       circle,
       fill=uniSgray,
@@ -146,6 +230,8 @@
       font=\bfseries\Huge]
       (title) at ([yshift=-.05\circlesize]current page.south east) {\inserttitle};
     \setlength{\circlesize}{.2\textheight}
+    
+    % Author
     \node[%
       circle,
       fill=white,
@@ -157,8 +243,33 @@
   \end{tikzpicture}
 }
 
+\newcommand{\titleslide}{
+\begin{frame}[plain]
+	\titlepage
+\end{frame}
+}
+\newcommand{\tocslide}[1][]{
+	\ifthenelse{\isempty{#1}}{
+		\iflanguage{ngerman}{
+			\def\toctitle{Übersicht}
+		}{
+			\def\toctitle{Overview}
+		}
+	}{
+		\def\toctitle{#1}
+	}
+	
+	\begin{frame}{\toctitle}
+		\tableofcontents
+	\end{frame}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% section page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \setbeamertemplate{section page}%
 {
+  \addtocounter{framenumber}{-1}
   \begin{tikzpicture}[overlay, remember picture]
     \setlength{\circlesize}{.9\textheight}
     \clip (current page.north west) rectangle (current page.south east);
@@ -188,6 +299,7 @@
       at ([xshift=-.1\circlesize, yshift=-.3\circlesize]sectiontitle.south east) {\thesection};
   \end{tikzpicture}
 }
+
 
 \setbeamertemplate{section in toc}{%
   \usebeamercolor[bg]{item projected}%
