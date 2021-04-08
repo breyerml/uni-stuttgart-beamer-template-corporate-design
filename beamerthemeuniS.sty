@@ -201,9 +201,12 @@
 	\input{#1}
 }
 
-\ifdef{\bibresource}{\addbibresource{\bibresource}}{}
+\makeatletter
+\newcommand{\bibresource}[1]{\gdef\@bibresource{#1}}
+\ifdef{\@bibresource}{\addbibresource{\@bibresource}}{}
+
 \newcommand{\bibliographyslide}[1][]{
-	\ifdef{\bibresource}{
+	\ifdef{\@bibresource}{
 		\ifthenelse{\isempty{#1}}{
 			\iflanguage{ngerman}{
 				\def\bibtitle{Quellen}
@@ -221,7 +224,7 @@
 		\PackageError{Bibliography Frame}{Can't create bibliography frame since no bib resources are given!}{Please set bibresources to the path of your bibliography file.}
 	}
 }
-
+\makeatother
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% title page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -287,6 +290,7 @@
 	\titlepage
 \end{frame}
 }
+
 \newcommand{\tocslide}[1][]{
 	\ifthenelse{\isempty{#1}}{
 		\iflanguage{ngerman}{
