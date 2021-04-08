@@ -1,4 +1,3 @@
-% !TeX spellcheck = en_US
 % !TeX encoding = utf8
 % !TeX program = lualatex
 % !TeX root = slides.tex
@@ -37,10 +36,10 @@ aspectratio=169,% for widescreen (16:9) presentations
 }
 
 
-
 % Others
 \usepackage{appendixnumberbeamer}
 \usepackage{booktabs}
+\usepackage{etoolbox}
 \usepackage{iftex}
 \usepackage{import}
 \usepackage{makecell}
@@ -49,9 +48,9 @@ aspectratio=169,% for widescreen (16:9) presentations
 \usepackage{multirow}
 \usepackage{pgf}
 \usepackage{todonotes}
-\usepackage{unicode-math}
 \usepackage{xcolor}
 \usepackage{xspace}
+
 
 % better C++ typeset
 \newcommand{\cpp}[1][]{\texttt{C++#1}\xspace}
@@ -78,6 +77,13 @@ aspectratio=169,% for widescreen (16:9) presentations
 % set fontsize to explicit value (in pt)
 \newcommand{\setfontsize}[1]{\fontsize{#1pt}{1.2\dimexpr#1pt\relax}\selectfont}
 
+% default use inline todos
+\presetkeys{todonotes}{inline}{}
+
+% patch marvosym right arrow
+\appto{\MVRightarrow}{\xspace}
+\appto{\MVRightArrow}{\xspace}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -99,7 +105,6 @@ aspectratio=169,% for widescreen (16:9) presentations
 %\bibresource{bibliography.bib}
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% slides %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
@@ -109,14 +114,13 @@ aspectratio=169,% for widescreen (16:9) presentations
 	\tocslide    % optional: [frametitle]
 	
 	
-	
 	% CONTENT
 	\input{content/content}
 	% TODO: add content
 	
 	
 	
-	% FINAL SLIDE + APPENDIX
+	% FINAL SLIDE + APPENDIX + BIBLIOGRAPHY
 	\finalslide
 %	\appendixslide{content/appendix.tex}
 %	\bibliographyslide    % optional: [frametitle]
