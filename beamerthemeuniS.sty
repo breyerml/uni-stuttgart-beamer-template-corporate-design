@@ -38,9 +38,10 @@
 % Biblatex
 \usepackage{biblatex}
 \usepackage{etoolbox}
-\usepackage{xifthen}
-\usepackage{xargs}
+\usepackage{phonenumbers}
 \usepackage{tikz}
+\usepackage{xargs}
+\usepackage{xifthen}
 
 \makeatletter
 \def\beamerrightmargin{\dimexpr\Gm@rmargin\relax}
@@ -94,8 +95,21 @@
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% finalslide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\newcommand{\email}[2][]{
+	\gdef\@email{#2}
+	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconemail{}}{}
+}
+\newcommand{\phone}[2][]{
+	\gdef\@phone{#2}
+	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconphone{}}{}
+}
+\renewcommand{\fax}[2][]{
+	\gdef\@fax{#2}
+	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconfax{}}{}
+}
 
-\newcommandx{\finalslide}[3][2, 3]{
+\newcommand{\finalslide}{
   \begin{frame}[plain]
     \begin{tikzpicture}[overlay, remember picture]
       \clip (current page.north west) rectangle (current page.south east);
@@ -126,22 +140,33 @@
         
       \end{column}
       \begin{column}{.7\textwidth}
-        
-        \ifdef{\useicons}{
-        	\def\email{\Letter}
-        	\def\phone{\Telefon}
-        	\def\faxx{\FAX}
-        }{
-        	\iflanguage{ngerman}{
-        		\def\email{Email}
-        		\def\phone{Telefon}
-        		\def\faxx{Fax}
-        	}{
-        		\def\email{email}
-        		\def\phone{phone}
-        		\def\faxx{fax}
-        	}
-        }
+    	\ifdef{\@useiconemail}{
+    		\def\emailicon{\Letter}
+    	}{
+    		\iflanguage{ngerman}{
+    			\def\emailicon{Email}
+    		}{
+    			\def\emailicon{email}
+    		}
+    	}
+    	\ifdef{\@useiconphone}{
+    		\def\phoneicon{\Telefon}
+    	}{
+    		\iflanguage{ngerman}{
+    			\def\phoneicon{Telefon}
+    		}{
+    			\def\phoneicon{phone}
+    		}
+    	}
+    	\ifdef{\@useiconfax}{
+    		\def\faxicon{\FAX}
+    	}{
+    		\iflanguage{ngerman}{
+    			\def\faxicon{Fax}
+    		}{
+    			\def\faxicon{fax}
+    		}
+    	}
         
         \begin{beamercolorbox}
           {palette tertiary}
@@ -150,13 +175,17 @@
             \multicolumn{2}{l}{\university, \insertinstitute} \\
             \rule{0pt}{4ex}\\
             
-            \email & \href{mailto:#1}{#1} \\
-            \ifthenelse{\isempty{#2}}{}{
-              \phone & #2 \\
-       	    }
-            \ifthenelse{\isempty{#3}}{}{
-              \faxx & #3 \\
-            }
+            \ifdef{\@email}{
+              \emailicon & \href{mailto:\@email}{\@email} \\
+            }{
+        	  \PackageError{finalslide}{No email specified!}{}
+    		}
+            \ifdef{\@phone}{
+              \phoneicon & \phonenumber{\@phone} \\
+       	    }{}
+            \ifdef{\@fax}{
+              \faxicon & \@fax \\
+            }{}
           \end{tabular}
         \end{beamercolorbox}
       \end{column}
@@ -164,6 +193,8 @@
 	\vfill
   \end{frame}
 }
+
+\makeatother
 
 \newcommand{\appendixslide}[1]{
 	\appendix
