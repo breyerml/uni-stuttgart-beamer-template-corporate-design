@@ -26,7 +26,12 @@
 
 \renewcommand{\familydefault}{\sfdefault}
 
-% fix German quotation marks
+% fix some latex quirks
+\usepackage{xspace}
+\usepackage[xspace]{ellipsis}
+\usepackage{fixmath}
+\usepackage[stretch=10]{microtype}
+
 
 % use fancy enumerate/itemize and restore beamer layout
 \usepackage{enumitem}\setitemize{%
@@ -35,7 +40,8 @@
   \usebeamertemplate{itemize item}
 }
 
-% Biblatex
+% necessary packages
+\usepackage{appendixnumberbeamer}
 \usepackage{biblatex}
 \usepackage{etoolbox}
 \usepackage{phonenumbers}

@@ -3,6 +3,7 @@
 % !TeX root = slides.tex
 
 
+\RequirePackage[l2tabu, orthodox]{nag}
 \documentclass[11pt, t, usernames, dvipsnames, 
 aspectratio=169,% for widescreen (16:9) presentations
 %aspectratio=43,% for traditional (4:3) presentations
@@ -35,25 +36,41 @@ aspectratio=169,% for widescreen (16:9) presentations
 	binary-units=true,
 }
 
+% define argmin and argmax as math operators
+\usepackage{amsmath}
+\usepackage[all, warning]{onlyamsmath}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+% define ceil and floor
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+
 
 % Others
-\usepackage{appendixnumberbeamer}
 \usepackage{booktabs}
-\usepackage{etoolbox}
-\usepackage{iftex}
-\usepackage{import}
 \usepackage{makecell}
-\usepackage{marvosym}
 \usepackage{multicol}
 \usepackage{multirow}
+
+\usepackage{cancel}
+\usepackage[useregional]{datetime2} 	% useregional=numeric
+\usepackage{marvosym}
+\usepackage{physics}
+
+\usepackage{glossaries}
+\usepackage{hyperref}
 \usepackage{pgf}
 \usepackage{todonotes}
 \usepackage{xcolor}
+\usepackage{xurl}
+
+\usepackage{etoolbox}
+\usepackage{iftex}
+\usepackage{import}
 \usepackage{xspace}
 
-
-% better C++ typeset
-\newcommand{\cpp}[1][]{\texttt{C++#1}\xspace}
 
 \makeatletter
 % include pgf plots
@@ -83,6 +100,9 @@ aspectratio=169,% for widescreen (16:9) presentations
 % patch marvosym right arrow
 \appto{\MVRightarrow}{\xspace}
 \appto{\MVRightArrow}{\xspace}
+
+% better C++ typeset
+\newcommand{\cpp}[1][]{\texttt{C++#1}\xspace}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
