@@ -53,9 +53,11 @@ aspectratio=169,% for widescreen (16:9) presentations
 \usepackage{xcolor}
 \usepackage{xspace}
 
+% better C++ typeset
 \newcommand{\cpp}[1][]{\texttt{C++#1}\xspace}
 
 \makeatletter
+% include pgf plots
 \newcommand{\includepgf}[2][\textwidth]{
 	\begingroup
 	\catcode`\_=12
@@ -65,6 +67,7 @@ aspectratio=169,% for widescreen (16:9) presentations
 }
 \makeatother
 
+% add reference to image
 \newcommand{\photocredit}[1]{%
 	\begingroup
 	\renewcommand\thefootnote{}\footnote{\tiny Photo credit: #1}%
@@ -72,6 +75,8 @@ aspectratio=169,% for widescreen (16:9) presentations
 	\endgroup
 }
 
+% set fontsize to explicit value (in pt)
+\newcommand{\setfontsize}[1]{\fontsize{#1pt}{1.2\dimexpr#1pt\relax}\selectfont}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
