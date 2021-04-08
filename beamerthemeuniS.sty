@@ -108,6 +108,7 @@
 	\gdef\@fax{#2}
 	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconfax{}}{}
 }
+\newcommand{\speakerimage}[1]{\gdef\@speakerimage{#1}}
 
 \newcommand{\finalslide}{
   \begin{frame}[plain]
@@ -131,10 +132,10 @@
 
     \begin{columns}[c]
       \begin{column}{2.5cm}
-		\ifdef{\speakerimage}{
+		\ifdef{\@speakerimage}{
 			\begin{tikzpicture}
 			\node[circle,minimum size=2.5cm, path picture={
-				\node at (path picture bounding box.center){\includegraphics[width=2.5cm]{\speakerimage}};}] {};
+				\node at (path picture bounding box.center){\includegraphics[width=2.5cm]{\@speakerimage}};}] {};
 			\end{tikzpicture}
 		}{}
         
@@ -227,6 +228,8 @@
 \makeatother
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% title page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\newcommand{\backgroundimage}[1]{\gdef\@backgroundimage{#1}}
 
 \newlength{\circlesize}
 \setbeamertemplate{title page}%
@@ -236,9 +239,9 @@
   \begin{tikzpicture}[overlay, remember picture]
     \clip (current page.north west) rectangle (current page.south east);
     
-    \ifdef{\backgroundimage}{
+    \ifdef{\@backgroundimage}{
 	    % background image
-	    \node[anchor=north west] at ([xshift=-1em, yshift=1ex]current page.north west){\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\backgroundimage}};
+	    \node[anchor=north west] at ([xshift=-1em, yshift=1ex]current page.north west){\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\@backgroundimage}};
 	    
 	    % Uni logo
 	    \node[%
@@ -284,6 +287,7 @@
       at ([xshift=-.1\circlesize, yshift=-.6\circlesize]title.north west) {\insertauthor};
   \end{tikzpicture}
 }
+\makeatother
 
 \newcommand{\titleslide}{
 \begin{frame}[plain]
