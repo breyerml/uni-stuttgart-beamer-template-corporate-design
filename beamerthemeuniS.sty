@@ -126,29 +126,37 @@
         
       \end{column}
       \begin{column}{.7\textwidth}
+        
+        \ifdef{\useicons}{
+        	\def\email{\Letter}
+        	\def\phone{\Telefon}
+        	\def\faxx{\FAX}
+        }{
+        	\iflanguage{ngerman}{
+        		\def\email{Email}
+        		\def\phone{Telefon}
+        		\def\faxx{Fax}
+        	}{
+        		\def\email{email}
+        		\def\phone{phone}
+        		\def\faxx{fax}
+        	}
+        }
+        
         \begin{beamercolorbox}
           {palette tertiary}
           \begin{tabular}{rl}
             \multicolumn{2}{l}{\insertshortauthor} \\
             \multicolumn{2}{l}{\university, \insertinstitute} \\
             \rule{0pt}{4ex}\\
-            \iflanguage{ngerman}{
-              Email & \href{mailto:#1}{#1} \\
-              \ifthenelse{\isempty{#2}}{}{
-              Telefon & #2 \\
-          	  }
-              \ifthenelse{\isempty{#3}}{}{
-              Fax & #3 \\
-              }
-            }{
-              email & \href{mailto:#1}{#1} \\
-              \ifthenelse{\isempty{#2}}{}{
-			  phone & #2 \\
-		      }
-			  \ifthenelse{\isempty{#3}}{}{
-			  fax & #3 \\
-			  }
-     	      }
+            
+            \email & \href{mailto:#1}{#1} \\
+            \ifthenelse{\isempty{#2}}{}{
+              \phone & #2 \\
+       	    }
+            \ifthenelse{\isempty{#3}}{}{
+              \faxx & #3 \\
+            }
           \end{tabular}
         \end{beamercolorbox}
       \end{column}
