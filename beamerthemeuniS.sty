@@ -15,16 +15,28 @@
 
 % set up fonts
 \usepackage{lmodern}
-\usepackage{fontspec}
 \usepackage{csquotes}
+
+\usepackage{iftex}
+\ifLuaTeX
+
+\usepackage{fontspec}
 \setsansfont[
-  BoldFont = UniversforUniS65Bd-Regular,
-  ItalicFont = UniversforUniS45LtObl-Rg,
-  BoldItalicFont = UniversforUniS45LtObl-Rg,
-  Scale = MatchUppercase 
+BoldFont = UniversforUniS65Bd-Regular,
+ItalicFont = UniversforUniS45LtObl-Rg,
+BoldItalicFont = UniversforUniS45LtObl-Rg,
+Scale = MatchUppercase 
 ]{UniversforUniS55Rm-Regular}
 
 \renewcommand{\familydefault}{\sfdefault}
+
+\else
+
+\usepackage[T1]{fontenc}
+\usepackage{inputenc}
+
+\fi
+
 
 % fix some latex quirks
 \usepackage{xspace}
