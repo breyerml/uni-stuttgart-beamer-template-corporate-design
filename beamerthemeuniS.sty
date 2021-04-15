@@ -1,3 +1,5 @@
+% !TeX root = slides.tex
+
 % Copyright 2017 by Christian Senger <senger@inue.uni-stuttgart.de>
 %
 % This file may be distributed and/or modified
@@ -191,7 +193,7 @@ Scale = MatchUppercase
           {palette tertiary}
           \begin{tabular}{rl}
             \multicolumn{2}{l}{\insertshortauthor} \\
-            \multicolumn{2}{l}{\university, \insertinstitute} \\
+            \multicolumn{2}{l}{\university, \insertinstitute} \\ % TODO: anpassen
             \rule{0pt}{4ex}\\
             
             \ifdef{\@email}{
@@ -249,6 +251,18 @@ Scale = MatchUppercase
 \makeatletter
 \newcommand{\backgroundimage}[1]{\gdef\@backgroundimage{#1}}
 
+\renewcommand{\institute}[3][]{
+	\gdef\@institutelong{#2}
+	\gdef\@institute{#3}
+	\ifthenelse{\isempty{#1}}{}{\gdef\@institutelogo{#1}}
+}
+
+\newcommand{\department}[3][]{
+	\gdef\@departmentlong{#2}
+	\gdef\@department{#3}
+	\ifthenelse{\isempty{#1}}{}{\gdef\@departmentlogo{#1}}
+}
+
 \newlength{\circlesize}
 \setbeamertemplate{title page}%
 {
@@ -270,7 +284,7 @@ Scale = MatchUppercase
 	    minimum width=2\textwidth,
 	    minimum height=3cm]
 	    at (current page.north west) {};
-	    \node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogo}};
+	    \node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogo}};
 	}{
 		\shade[%
 		top color=uniSlightblue,
@@ -279,8 +293,42 @@ Scale = MatchUppercase
 		%opacity=.8
 		]
 		(current page.north west) rectangle (current page.south east);
-		\node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogow}};
+		\node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogow}};
 	}
+
+	\ifdef{\@institute}{
+		% institue
+		\node[%
+		anchor=west, 
+		align=left,
+		text=white,
+		text width=5cm,
+		below=0.4cm of logo, 
+		xshift=1.4cm
+		] (institute_name) {\@institutelong};
+		
+		\ifdef{\@institutelogo}{
+			% institute logo
+			\node[left=0em of institute_name] {\includegraphics[width=1cm]{\@institutelogo}};
+		}{}
+	}{}
+
+	\ifdef{\@department}{
+		% department
+		\node[%
+		anchor=west, 
+		align=left,
+		text=white,
+		text width=5cm,
+		below = 0.4cm of \ifdef{\@institute}{institute_name}{logo},
+%		\ifdef{\@institute}{}{ xshift=1.4cm } % TODO: shift
+		] (department_name) {\itshape\@departmentlong};
+		
+		\ifdef{\@departmentlogo}{
+			% department logo
+			\node[left=0em of department_name] {\includegraphics[width=1cm]{\@departmentlogo}};
+		}{}
+	}{}
     
     % Title
     \node[%
