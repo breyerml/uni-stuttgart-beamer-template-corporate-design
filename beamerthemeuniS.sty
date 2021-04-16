@@ -251,21 +251,28 @@ Scale = MatchUppercase
 \makeatletter
 \newcommand{\backgroundimage}[1]{\gdef\@backgroundimage{#1}}
 
-\renewcommand{\institute}[3][]{
-	\gdef\@institutelong{#2}
-	\gdef\@institute{#3}
-	\ifthenelse{\isempty{#1}}{}{\gdef\@institutelogo{#1}}
+\renewcommand{\institute}[2][]{
+	\gdef\@institute{#2}
+	\ifthenelse{\isempty{#1}}{}{\gdef\@institutefooter{#1}}
 }
+\renewcommand{\insertinstitute}{\ifdef{\@institute}{\@institute}{}}
+\renewcommand{\insertshortinstitute}{\ifdef{\@institutefooter}{\@institutefooter}{\insertinstitute}}
 
 \newcommand{\department}[3][]{
-	\gdef\@departmentlong{#2}
-	\gdef\@department{#3}
-	\ifthenelse{\isempty{#1}}{}{\gdef\@departmentlogo{#1}}
+	\gdef\@department{#2}
+	\ifthenelse{\isempty{#1}}{}{\gdef\@departmentfooter{#1}}
 }
+\newcommand{\insertdepartment}{\ifdef{\@department}{\@department}{}}
+\newcommand{\insertshortdepartment}{\ifdef{\@departmentfooter}{\@departmentfooter}{\insertdepartment}}
+
 
 \newlength{\circlesize}
 \setbeamertemplate{title page}%
 {
+  % sanity checks
+  \ifdefempty{\inserttitle}{\PackageError{Title}{Missing title!}{}}{}
+  % TODO: check missing author
+	
   \addtocounter{framenumber}{-1}
   \setlength{\circlesize}{1.12\textheight}
   \begin{tikzpicture}[overlay, remember picture]
@@ -273,7 +280,7 @@ Scale = MatchUppercase
     
     \ifdef{\@backgroundimage}{
 	    % background image
-	    \node[anchor=north west] at ([xshift=-1em, yshift=1ex]current page.north west){\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\@backgroundimage}};
+	    \node[anchor=north west] at ([xshift=-1em, yshift=1ex] current page.north west){\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\@backgroundimage}};
 	    
 	    % Uni logo
 	    \node[%
@@ -295,40 +302,6 @@ Scale = MatchUppercase
 		(current page.north west) rectangle (current page.south east);
 		\node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogow}};
 	}
-
-	\ifdef{\@institute}{
-		% institue
-		\node[%
-		anchor=west, 
-		align=left,
-		text=white,
-		text width=5cm,
-		below=0.4cm of logo, 
-		xshift=1.4cm
-		] (institute_name) {\@institutelong};
-		
-		\ifdef{\@institutelogo}{
-			% institute logo
-			\node[left=0em of institute_name] {\includegraphics[width=1cm]{\@institutelogo}};
-		}{}
-	}{}
-
-	\ifdef{\@department}{
-		% department
-		\node[%
-		anchor=west, 
-		align=left,
-		text=white,
-		text width=5cm,
-		below = 0.4cm of \ifdef{\@institute}{institute_name}{logo},
-%		\ifdef{\@institute}{}{ xshift=1.4cm } % TODO: shift
-		] (department_name) {\itshape\@departmentlong};
-		
-		\ifdef{\@departmentlogo}{
-			% department logo
-			\node[left=0em of department_name] {\includegraphics[width=1cm]{\@departmentlogo}};
-		}{}
-	}{}
     
     % Title
     \node[%
@@ -357,7 +330,7 @@ Scale = MatchUppercase
 
 \newcommand{\titleslide}{
 \begin{frame}[plain]
-	\titlepage
+	\maketitle
 \end{frame}
 }
 
