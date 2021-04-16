@@ -62,6 +62,10 @@ Scale = MatchUppercase
 \usepackage{tikz}
 \usepackage{xargs}
 \usepackage{xifthen}
+\usepackage{fontawesome5}
+
+\definecolor{orcidlogocol}{HTML}{A6CE39}
+
 
 \makeatletter
 \def\beamerrightmargin{\dimexpr\Gm@rmargin\relax}
@@ -162,7 +166,7 @@ Scale = MatchUppercase
       \end{column}
       \begin{column}{.7\textwidth}
     	\ifdef{\@useiconemail}{
-    		\def\emailicon{\Letter}
+    		\def\emailicon{\faIcon[regular]{envelope}}
     	}{
     		\iflanguage{ngerman}{
     			\def\emailicon{Email}
@@ -171,7 +175,7 @@ Scale = MatchUppercase
     		}
     	}
     	\ifdef{\@useiconphone}{
-    		\def\phoneicon{\Telefon}
+    		\def\phoneicon{\faIcon{phone}}
     	}{
     		\iflanguage{ngerman}{
     			\def\phoneicon{Telefon}
@@ -180,7 +184,7 @@ Scale = MatchUppercase
     		}
     	}
     	\ifdef{\@useiconfax}{
-    		\def\faxicon{\FAX}
+    		\def\faxicon{\faIcon{fax}}
     	}{
     		\iflanguage{ngerman}{
     			\def\faxicon{Fax}
