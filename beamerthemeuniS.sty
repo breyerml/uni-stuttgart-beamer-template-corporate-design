@@ -27,7 +27,7 @@
 BoldFont = UniversforUniS65Bd-Regular,
 ItalicFont = UniversforUniS45LtObl-Rg,
 BoldItalicFont = UniversforUniS45LtObl-Rg,
-Scale = MatchUppercase 
+Scale = MatchUppercase
 ]{UniversforUniS55Rm-Regular}
 
 \renewcommand{\familydefault}{\sfdefault}
@@ -55,10 +55,12 @@ Scale = MatchUppercase
 }
 
 % necessary packages
+\usepackage{academicons}
 \usepackage{appendixnumberbeamer}
 \usepackage{biblatex}
 \usepackage{etoolbox}
 \usepackage{phonenumbers}
+\usepackage{qrcode}
 \usepackage{tikz}
 \usepackage{xargs}
 \usepackage{xifthen}
@@ -104,7 +106,7 @@ Scale = MatchUppercase
 	\def\university{University of Stuttgart}
 }
 
-
+% TODO: besser
 % automatically display \sectionpage at beginning of every \section{}
 \AtBeginSection[]{%
 	\begin{frame}[plain]
@@ -120,6 +122,8 @@ Scale = MatchUppercase
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% finalslide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
+\newcommand{\speakerimage}[1]{\gdef\@speakerimage{#1}}
+
 \newcommand{\email}[2][]{
 	\gdef\@email{#2}
 	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconemail{}}{}
@@ -132,7 +136,19 @@ Scale = MatchUppercase
 	\gdef\@fax{#2}
 	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconfax{}}{}
 }
-\newcommand{\speakerimage}[1]{\gdef\@speakerimage{#1}}
+\newcommand{\officehours}[2][]{
+	\gdef\@officehours{#2}
+	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconofficehours{}}{}
+}
+\newcommand{\website}[2][]{
+	\gdef\@website{\scriptsize\url{#2}}
+	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconwebsite{}}{}
+	\gdef\@websiteqr{\textcolor{white}{\qrcode[height=1.5cm]{#2}}}
+}
+\newcommand{\orcid}[2][]{
+	\gdef\@orcid{\href{https://orcid.org/#2}{#2}}
+	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconorcid{}}{}
+}
 
 \newcommand{\finalslide}{
   \begin{frame}[plain]
@@ -140,7 +156,7 @@ Scale = MatchUppercase
       \clip (current page.north west) rectangle (current page.south east);
       % uncomment in order to repeat title page background, also uncomment opacity below
       %\node[anchor=north west] at ([xshift=-1em, yshift=1ex]current page.north west) {\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\backgroundimage}};
-      
+
       % Background
       \shade[%
         top color=uniSlightblue,
@@ -150,9 +166,13 @@ Scale = MatchUppercase
         ]
         (current page.north west) rectangle (current page.south east);
         \node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogow}};
+
+        \ifdef{\@websiteqr}{
+        	\node[anchor=south west] at (current page.south west) (QR) {\@websiteqr};
+        }{}
     \end{tikzpicture}
 
-    \vspace{3.25cm}
+    \vspace{2.5cm}
 
     \begin{columns}[c]
       \begin{column}{2.5cm}
@@ -162,7 +182,7 @@ Scale = MatchUppercase
 				\node at (path picture bounding box.center){\includegraphics[width=2.5cm]{\@speakerimage}};}] {};
 			\end{tikzpicture}
 		}{}
-        
+
       \end{column}
       \begin{column}{.7\textwidth}
     	\ifdef{\@useiconemail}{
@@ -192,14 +212,43 @@ Scale = MatchUppercase
     			\def\faxicon{fax}
     		}
     	}
-        
+    	\ifdef{\@useiconofficehours}{
+    		\def\officehoursicon{\faIcon[regular]{calendar-check}}
+    	}{
+    		\iflanguage{ngerman}{
+    			\def\officehoursicon{Sprechstunden}
+    		}{
+    			\def\officehoursicon{office hours}
+    		}
+    	}
+    	\ifdef{\@useiconwebsite}{
+    		\def\websiteicon{\faIcon{link}}
+    	}{
+    		\iflanguage{ngerman}{
+    			\def\websiteicon{Website}
+    		}{
+    			\def\websiteicon{website}
+    		}
+    	}
+	    \ifdef{\@useiconorcid}{
+		    \def\orcidicon{\textcolor{orcidlogocol}{\aiOrcid}}
+		}{
+			\def\orcidicon{ORCID}
+		}
+
         \begin{beamercolorbox}
           {palette tertiary}
+          \def\arraystretch{1.1}
           \begin{tabular}{rl}
-            \multicolumn{2}{l}{\insertshortauthor} \\
-            \multicolumn{2}{l}{\university, \insertinstitute} \\ % TODO: anpassen
-            \rule{0pt}{4ex}\\
-            
+            \multicolumn{2}{l}{\insertauthor} \\
+            \multicolumn{2}{l}{\university} \\
+            \ifdef{\@institute}{\multicolumn{2}{l}{\insertinstitute} \\}{}
+            \ifdef{\@department}{\multicolumn{2}{l}{\itshape\insertdepartment} \\}{}
+          \end{tabular}\\[3ex]
+      	  \def\arraystretch{1.2}
+      	  \bgroup
+      	  \small
+          \begin{tabular}{rl}
             \ifdef{\@email}{
               \emailicon & \href{mailto:\@email}{\@email} \\
             }{
@@ -211,7 +260,17 @@ Scale = MatchUppercase
             \ifdef{\@fax}{
               \faxicon & \@fax \\
             }{}
+        	\ifdef{\@officehours}{
+        		\officehoursicon & \@officehours \\
+        	}{}
+      		\ifdef{\@website}{
+		        \websiteicon & \@website \\
+		    }{}
+		    \ifdef{\@website}{
+			    \orcidicon & \@orcid \\
+		    }{}
           \end{tabular}
+      	  \egroup
         \end{beamercolorbox}
       \end{column}
     \end{columns}
@@ -276,16 +335,16 @@ Scale = MatchUppercase
   % sanity checks
   \ifdefempty{\inserttitle}{\PackageError{Title}{Missing title!}{}}{}
   % TODO: check missing author
-	
+
   \addtocounter{framenumber}{-1}
   \setlength{\circlesize}{1.12\textheight}
   \begin{tikzpicture}[overlay, remember picture]
     \clip (current page.north west) rectangle (current page.south east);
-    
+
     \ifdef{\@backgroundimage}{
 	    % background image
 	    \node[anchor=north west] at ([xshift=-1em, yshift=1ex] current page.north west){\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\@backgroundimage}};
-	    
+
 	    % Uni logo
 	    \node[%
 	    rectangle,
@@ -306,7 +365,7 @@ Scale = MatchUppercase
 		(current page.north west) rectangle (current page.south east);
 		\node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogow}};
 	}
-    
+
     % Title
     \node[%
       circle,
@@ -318,7 +377,7 @@ Scale = MatchUppercase
       font=\bfseries\Huge]
       (title) at ([yshift=-.05\circlesize]current page.south east) {\inserttitle};
     \setlength{\circlesize}{.2\textheight}
-    
+
     % Author
     \node[%
       circle,
@@ -348,7 +407,7 @@ Scale = MatchUppercase
 	}{
 		\def\toctitle{#1}
 	}
-	
+
 	\begin{frame}{\toctitle}
 		\tableofcontents
 	\end{frame}
