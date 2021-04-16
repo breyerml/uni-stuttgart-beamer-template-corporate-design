@@ -129,43 +129,86 @@ Scale = MatchUppercase
 \newcommand{\speakerimage}[1]{\gdef\@speakerimage{#1}}
 
 \newcommand{\email}[2][]{
-	\gdef\@email{#2}
-	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconemail{}}{}
+	\ifthenelse{\equal{#1}{usetxt}}{
+		\gdef\@emailicon{\iflanguage{ngerman}{E-Mail}{email}}
+	}{
+		\gdef\@emailicon{\faIcon[regular]{envelope}}
+	}
+	\gdef\@email{\href{mailto:#2}{#2}}
 }
+
 \newcommand{\phone}[2][]{
-	\gdef\@phone{#2}
-	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconphone{}}{}
+	\ifthenelse{\equal{#1}{usetxt}}{
+		\gdef\@phoneicon{\iflanguage{ngerman}{Telefon}{phone}}
+	}{
+		\gdef\@phoneicon{\faIcon{phone}}
+	}
+	\gdef\@phone{\phonenumber{#2}}
 }
+
 \renewcommand{\fax}[2][]{
+	\ifthenelse{\equal{#1}{usetxt}}{
+		\gdef\@faxicon{\iflanguage{ngerman}{Fax}{fax}}
+	}{
+		\gdef\@faxicon{\faIcon{fax}}
+	}
 	\gdef\@fax{#2}
-	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconfax{}}{}
 }
-\newcommand{\officehours}[2][]{
-	\gdef\@officehours{#2}
-	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconofficehours{}}{}
-}
-\newcommand{\website}[2][]{
-	\gdef\@website{\url{#2}}
-	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconwebsite{}}{}
-	\gdef\@websiteqr{\textcolor{white}{\qrcode[height=1.25cm]{#2}}}
-}
-\newcommand{\orcid}[2][]{
-	\gdef\@orcid{\href{https://orcid.org/#2}{#2}}
-	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconorcid{}}{}
-}
+
+
 \newcommand{\address}[4][]{
+	\ifthenelse{\equal{#1}{usetxt}}{
+		\gdef\@addressicon{\iflanguage{ngerman}{Adresse}{address}}
+	}{
+		\gdef\@addressicon{\faIcon{map-marker-alt}}
+	}
 	\gdef\@street{#2}
 	\gdef\@zip{#3}
-	\gdef\@room{Room: #4}
-	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconaddress{}}{}
+	\def\room{\iflanguage{ngerman}{Raum}{Room}:}
+	\gdef\@address{\href{http://maps.google.com/?q=#2+#3}{\makecell[tl]{#2\\#3\\\room #4}}}
+}
+
+\newcommand{\officehours}[2][]{
+	\ifthenelse{\equal{#1}{usetxt}}{
+		\gdef\@officehoursicon{\iflanguage{ngerman}{Sprechstunden}{office hours}}
+	}{
+		\gdef\@officehoursicon{\faIcon[regular]{calendar-check}}
+	}
+	\gdef\@officehours{#2}
+}
+
+\newcommand{\website}[2][]{
+	\ifthenelse{\equal{#1}{usetxt}}{
+		\gdef\@websiteicon{\iflanguage{ngerman}{Website}{website}}
+	}{
+		\gdef\@websiteicon{\faIcon{link}}
+	}
+	\gdef\@website{\url{#2}}
+	\gdef\@websiteqr{\textcolor{white}{\qrcode[height=1.25cm]{#2}}}
+}
+
+\newcommand{\orcid}[2][]{
+	\ifthenelse{\equal{#1}{usetxt}}{
+		\gdef\@orcidicon{ORCID}
+	}{
+		\gdef\@orcidicon{\textcolor{orcidlogocol}{\aiOrcid}}
+	}
+	\gdef\@orcid{\href{https://orcid.org/#2}{#2}}
+}
+
+\newcommand{\addoptionalinfo}[2]{
+	\ifdef{#2}{
+		#1 & #2 \\
+	}{}
 }
 
 \newcommand{\finalslide}{
+	
+  \ifdef{\@email}{}{\PackageError{finalslide}{No email specified!}{}}
+	
   \begin{frame}[plain]
     \begin{tikzpicture}[overlay, remember picture]
       \clip (current page.north west) rectangle (current page.south east);
-      % uncomment in order to repeat title page background, also uncomment opacity below
-      %\node[anchor=north west] at ([xshift=-1em, yshift=1ex]current page.north west) {\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\backgroundimage}};
 
       % Background
       \shade[%
@@ -185,13 +228,6 @@ Scale = MatchUppercase
     \end{tikzpicture}
 
     \vspace{2cm}
-    
-%    \ifdef{\@speakerimage}{
-%    	\begin{tikzpicture}[overlay, remember picture]
-%    	\node[circle, minimum size=2.5cm, path picture={
-%    		\node at (path picture bounding box.center){\includegraphics[width=2.5cm]{\@speakerimage}};}] {};
-%    	\end{tikzpicture}
-%    }{}
 
     \begin{columns}[T]
       \begin{column}{2.5cm}
@@ -206,65 +242,6 @@ Scale = MatchUppercase
       \end{column}
       \begin{column}{.75\textwidth}
       	\begin{minipage}[c][0.75\textheight][c]{\columnwidth}
-    	\ifdef{\@useiconemail}{
-    		\def\emailicon{\faIcon[regular]{envelope}}
-    	}{
-    		\iflanguage{ngerman}{
-    			\def\emailicon{Email}
-    		}{
-    			\def\emailicon{email}
-    		}
-    	}
-    	\ifdef{\@useiconphone}{
-    		\def\phoneicon{\faIcon{phone}}
-    	}{
-    		\iflanguage{ngerman}{
-    			\def\phoneicon{Telefon}
-    		}{
-    			\def\phoneicon{phone}
-    		}
-    	}
-    	\ifdef{\@useiconfax}{
-    		\def\faxicon{\faIcon{fax}}
-    	}{
-    		\iflanguage{ngerman}{
-    			\def\faxicon{Fax}
-    		}{
-    			\def\faxicon{fax}
-    		}
-    	}
-    	\ifdef{\@useiconofficehours}{
-    		\def\officehoursicon{\faIcon[regular]{calendar-check}}
-    	}{
-    		\iflanguage{ngerman}{
-    			\def\officehoursicon{Sprechstunden}
-    		}{
-    			\def\officehoursicon{office hours}
-    		}
-    	}
-    	\ifdef{\@useiconwebsite}{
-    		\def\websiteicon{\faIcon{link}}
-    	}{
-    		\iflanguage{ngerman}{
-    			\def\websiteicon{Website}
-    		}{
-    			\def\websiteicon{website}
-    		}
-    	}
-	    \ifdef{\@useiconorcid}{
-		    \def\orcidicon{\textcolor{orcidlogocol}{\aiOrcid}}
-		}{
-			\def\orcidicon{ORCID}
-		}
-		\ifdef{\@useiconaddress}{
-			\def\addressicon{\faIcon{map-marker-alt}}
-		}{
-			\iflanguage{ngerman}{
-				\def\addressicon{Adresse}
-			}{
-				\def\addressicon{address}
-			}
-		}
 
         \begin{beamercolorbox}
           {palette tertiary}
@@ -274,35 +251,20 @@ Scale = MatchUppercase
             \ifdef{\@institute}{\multicolumn{2}{l}{\insertinstitute} \\}{}
             \ifdef{\@department}{\multicolumn{2}{l}{\itshape\insertdepartment} \\}{}
           \end{tabular}\\[2ex]
-      	  \def\arraystretch{1.2}
-      	  \bgroup
-      	  \footnotesize
-          \begin{tabularx}{\columnwidth}{r X}
-            \ifdef{\@email}{
-              \emailicon & \href{mailto:\@email}{\@email} \\
-            }{
-        	  \PackageError{finalslide}{No email specified!}{}
-    		}
-            \ifdef{\@phone}{
-              \phoneicon & \phonenumber{\@phone} \\
-       	    }{}
-            \ifdef{\@fax}{
-              \faxicon & \@fax \\
-            }{}
-	        \ifdef{\@street}{
-		        \addressicon & \href{http://maps.google.com/?q=\@street+\@zip}{\makecell[tl]{\@street\\\@zip\\\@room}} \\
-		    }{}
-        	\ifdef{\@officehours}{
-        		\officehoursicon & \@officehours \\
-        	}{}
-      		\ifdef{\@website}{
-		        \websiteicon & \@website \\
-		    }{}
-		    \ifdef{\@orcid}{
-			    \orcidicon & \@orcid \\
-		    }{}
-          \end{tabularx}
-      	  \egroup
+      	  
+      	  {
+	      	  \def\arraystretch{1.2}
+	      	  \footnotesize
+	          \begin{tabularx}{\columnwidth}{r X}
+	            \@emailicon & \@email \\
+	            \addoptionalinfo{\@phoneicon}{\@phone}
+	            \addoptionalinfo{\@faxicon}{\@fax}
+	            \addoptionalinfo{\@addressicon}{\@address}
+	            \addoptionalinfo{\@officehoursicon}{\@officehours}
+	            \addoptionalinfo{\@websiteicon}{\@website}
+	            \addoptionalinfo{\@orcidicon}{\@orcid}
+	          \end{tabularx}
+	      }
         \end{beamercolorbox}
       \end{minipage}
       \end{column}
