@@ -143,7 +143,7 @@ Scale = MatchUppercase
 \newcommand{\website}[2][]{
 	\gdef\@website{\scriptsize\url{#2}}
 	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconwebsite{}}{}
-	\gdef\@websiteqr{\textcolor{white}{\qrcode[height=1.5cm]{#2}}}
+	\gdef\@websiteqr{\textcolor{white}{\qrcode[height=1.25cm]{#2}}}
 }
 \newcommand{\orcid}[2][]{
 	\gdef\@orcid{\href{https://orcid.org/#2}{#2}}
@@ -168,7 +168,7 @@ Scale = MatchUppercase
         \node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogow}};
 
         \ifdef{\@websiteqr}{
-        	\node[anchor=south west] at (current page.south west) (QR) {\@websiteqr};
+        	\node[anchor=south west] at (current page.south west) {\@websiteqr};
         }{}
     \end{tikzpicture}
 
@@ -241,13 +241,12 @@ Scale = MatchUppercase
           \def\arraystretch{1.1}
           \begin{tabular}{rl}
             \multicolumn{2}{l}{\insertauthor} \\
-            \multicolumn{2}{l}{\university} \\
             \ifdef{\@institute}{\multicolumn{2}{l}{\insertinstitute} \\}{}
             \ifdef{\@department}{\multicolumn{2}{l}{\itshape\insertdepartment} \\}{}
           \end{tabular}\\[3ex]
       	  \def\arraystretch{1.2}
       	  \bgroup
-      	  \small
+      	  \footnotesize
           \begin{tabular}{rl}
             \ifdef{\@email}{
               \emailicon & \href{mailto:\@email}{\@email} \\
@@ -266,7 +265,7 @@ Scale = MatchUppercase
       		\ifdef{\@website}{
 		        \websiteicon & \@website \\
 		    }{}
-		    \ifdef{\@website}{
+		    \ifdef{\@orcid}{
 			    \orcidicon & \@orcid \\
 		    }{}
           \end{tabular}
