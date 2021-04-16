@@ -65,6 +65,8 @@ Scale = MatchUppercase
 \usepackage{xargs}
 \usepackage{xifthen}
 \usepackage{fontawesome5}
+\usepackage{tabularx}
+
 
 \definecolor{orcidlogocol}{HTML}{A6CE39}
 
@@ -100,10 +102,12 @@ Scale = MatchUppercase
 	\def\university{Universität Stuttgart}
 	\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo.pdf}    % UniS logo for title slide
 	\pgfdeclareimage[height=1cm]{unilogow}{.logos/unilogo_w.pdf} % (white) UniS logo for final slide
+	\def\universitylink{https://www.uni-stuttgart.de/}
 }{
 	\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo_en.pdf}    % UniS logo for title slide
 	\pgfdeclareimage[height=1cm]{unilogow}{.logos/unilogo_w_en.pdf} % (white) UniS logo for final slide
 	\def\university{University of Stuttgart}
+	\def\universitylink{https://www.uni-stuttgart.de/en/}
 }
 
 % TODO: besser
@@ -141,13 +145,19 @@ Scale = MatchUppercase
 	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconofficehours{}}{}
 }
 \newcommand{\website}[2][]{
-	\gdef\@website{\scriptsize\url{#2}}
+	\gdef\@website{\url{#2}}
 	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconwebsite{}}{}
 	\gdef\@websiteqr{\textcolor{white}{\qrcode[height=1.25cm]{#2}}}
 }
 \newcommand{\orcid}[2][]{
 	\gdef\@orcid{\href{https://orcid.org/#2}{#2}}
 	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconorcid{}}{}
+}
+\newcommand{\address}[4][]{
+	\gdef\@street{#2}
+	\gdef\@zip{#3}
+	\gdef\@room{Room: #4}
+	\ifthenelse{\equal{#1}{useicon}}{\gdef\@useiconaddress{}}{}
 }
 
 \newcommand{\finalslide}{
@@ -165,26 +175,37 @@ Scale = MatchUppercase
         %opacity=.8
         ]
         (current page.north west) rectangle (current page.south east);
-        \node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogow}};
-
+        
+        \node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\href{\universitylink}{\pgfuseimage{unilogow}}};
+        
         \ifdef{\@websiteqr}{
         	\node[anchor=south west] at (current page.south west) {\@websiteqr};
         }{}
+
     \end{tikzpicture}
 
-    \vspace{2.5cm}
+    \vspace{2cm}
+    
+%    \ifdef{\@speakerimage}{
+%    	\begin{tikzpicture}[overlay, remember picture]
+%    	\node[circle, minimum size=2.5cm, path picture={
+%    		\node at (path picture bounding box.center){\includegraphics[width=2.5cm]{\@speakerimage}};}] {};
+%    	\end{tikzpicture}
+%    }{}
 
-    \begin{columns}[c]
+    \begin{columns}[T]
       \begin{column}{2.5cm}
-		\ifdef{\@speakerimage}{
-			\begin{tikzpicture}
-			\node[circle,minimum size=2.5cm, path picture={
-				\node at (path picture bounding box.center){\includegraphics[width=2.5cm]{\@speakerimage}};}] {};
-			\end{tikzpicture}
-		}{}
-
+      	\begin{minipage}[c][0.75\textheight][c]{\columnwidth}
+	    	\ifdef{\@speakerimage}{
+		    	\begin{tikzpicture}
+					\node[circle, minimum size=2.5cm, path picture={
+						\node at (path picture bounding box.center){\includegraphics[width=2.5cm]{\@speakerimage}};}] {};
+				\end{tikzpicture}
+			}{}
+   		\end{minipage}
       \end{column}
-      \begin{column}{.7\textwidth}
+      \begin{column}{.75\textwidth}
+      	\begin{minipage}[c][0.75\textheight][c]{\columnwidth}
     	\ifdef{\@useiconemail}{
     		\def\emailicon{\faIcon[regular]{envelope}}
     	}{
@@ -235,6 +256,15 @@ Scale = MatchUppercase
 		}{
 			\def\orcidicon{ORCID}
 		}
+		\ifdef{\@useiconaddress}{
+			\def\addressicon{\faIcon{map-marker-alt}}
+		}{
+			\iflanguage{ngerman}{
+				\def\addressicon{Adresse}
+			}{
+				\def\addressicon{address}
+			}
+		}
 
         \begin{beamercolorbox}
           {palette tertiary}
@@ -243,11 +273,11 @@ Scale = MatchUppercase
             \multicolumn{2}{l}{\insertauthor} \\
             \ifdef{\@institute}{\multicolumn{2}{l}{\insertinstitute} \\}{}
             \ifdef{\@department}{\multicolumn{2}{l}{\itshape\insertdepartment} \\}{}
-          \end{tabular}\\[3ex]
+          \end{tabular}\\[2ex]
       	  \def\arraystretch{1.2}
       	  \bgroup
       	  \footnotesize
-          \begin{tabular}{rl}
+          \begin{tabularx}{\columnwidth}{r X}
             \ifdef{\@email}{
               \emailicon & \href{mailto:\@email}{\@email} \\
             }{
@@ -259,6 +289,9 @@ Scale = MatchUppercase
             \ifdef{\@fax}{
               \faxicon & \@fax \\
             }{}
+	        \ifdef{\@street}{
+		        \addressicon & \href{http://maps.google.com/?q=\@street+\@zip}{\makecell[tl]{\@street\\\@zip\\\@room}} \\
+		    }{}
         	\ifdef{\@officehours}{
         		\officehoursicon & \@officehours \\
         	}{}
@@ -268,12 +301,12 @@ Scale = MatchUppercase
 		    \ifdef{\@orcid}{
 			    \orcidicon & \@orcid \\
 		    }{}
-          \end{tabular}
+          \end{tabularx}
       	  \egroup
         \end{beamercolorbox}
+      \end{minipage}
       \end{column}
     \end{columns}
-	\vfill
   \end{frame}
 }
 
@@ -353,7 +386,7 @@ Scale = MatchUppercase
 	    minimum width=2\textwidth,
 	    minimum height=3cm]
 	    at (current page.north west) {};
-	    \node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogo}};
+	    \node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm]current page.north west) {\href{\universitylink}{\pgfuseimage{unilogo}}};
 	}{
 		\shade[%
 		top color=uniSlightblue,
@@ -362,7 +395,7 @@ Scale = MatchUppercase
 		%opacity=.8
 		]
 		(current page.north west) rectangle (current page.south east);
-		\node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm]current page.north west) {\pgfuseimage{unilogow}};
+		\node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm]current page.north west) {\href{\universitylink}{\pgfuseimage{unilogow}}};
 	}
 
     % Title
