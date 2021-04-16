@@ -123,6 +123,38 @@ Scale = MatchUppercase
 }
 
 
+\makeatletter
+\newcommand{\cclicense}[2][]{
+	\ifthenelse{\isempty{#1}}{
+		\def\ccversion{4.0}	
+	}{
+		\ifthenelse{\equal{#1}{4.0}}{
+			\def\ccversion{4.0}	
+		}{
+			\ifthenelse{\equal{#1}{3.0}}{
+				\def\ccversion{3.0}
+			}{
+				\PackageError{CC License}{Illegal Creative Commons License Version (4.0 or 3.0)!}{}
+			}
+		}
+	}
+	
+	
+	\def\cclang{\iflanguage{ngerman}{german}{\languagename}}
+	\gdef\@cclicenselink{https://creativecommons.org/licenses/#2/\ccversion/deed.\cclang}
+	
+	\IfFileExists{.license/#2.png}{
+		\gdef\@cclicenseimage{.license/#2.png}
+	}{
+		\ifthenelse{\equal{#2}{cc0}}{
+			\gdef\@cclicenseimage{.license/cc-zero.png}
+		}{
+			\PackageError{CC License}{Illegal Creative Commons License!}{}
+		}
+	}
+}
+\makeatother
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% finalslide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
@@ -381,6 +413,10 @@ Scale = MatchUppercase
       align=left,
       font=\bfseries\normalsize]
       at ([xshift=-.1\circlesize, yshift=-.6\circlesize]title.north west) {\insertauthor};
+      
+      \ifdef{\@cclicenseimage}{
+	      \node[inner sep=0pt, outer sep=0pt, anchor=south west] at (current page.south west) {\href{\@cclicenselink}{\includegraphics[width=1.75cm]{\@cclicenseimage}}};
+      }{}
   \end{tikzpicture}
 }
 \makeatother
