@@ -40,21 +40,21 @@
 
 %% necessary packages for the styles
 \ifPDFTeX
-	\usepackage{svg}
+	\usepackage{svg} %% use external svg if compiled with PDFTeX
 \else
-\usepackage{academicons}
+	\usepackage{academicons}  %% use integrated icon if not compiled with PDFTeX
 \fi
 \usepackage{appendixnumberbeamer}
-\usepackage{etoolbox}
-\usepackage{phonenumbers}
-\usepackage{qrcode}
+\usepackage{etoolbox}  %% interal logic
+\usepackage{phonenumbers}  %% correctly typeset phone numbers
+\usepackage{qrcode}  %% create QR codes
 \usepackage{tikz}
-\usepackage{xargs}
-\usepackage{xifthen}
-\usepackage{xstring} 				% switch case over parameters in \newcommand
-\usepackage{fontawesome5}
-\usepackage{tabularx}
-\usepackage{trimspaces}
+\usepackage{xargs}  %% interal logic
+\usepackage{xifthen}  %% interal logic
+\usepackage{xstring}  %% switch case over optional parameters
+\usepackage{fontawesome5}  %% icons for final slide
+\usepackage{tabularx}  %% fixed width table for last slide
+\usepackage{trimspaces}  %% be able to trim whitespaces from options in optional parameter lists
 
 %% fix some latex quirks
 \usepackage{xspace}
@@ -454,19 +454,44 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
 \newcommand{\bibliographyslide}[1][]{
-	\ifthenelse{\isempty{#1}}{
-		%% no title given: set default value according to language ngerman vs english
-		\iflanguage{ngerman}{
-			\def\bibtitle{Quellen}
-		}{
-			\def\bibtitle{References}
-		}
-	}{
-		%% set provided title
-		\def\bibtitle{#1}
+	% TODO: clean up
+	%% check which options have been provided
+	\def\nextitem{\def\nextitem{,}}%
+	\@for \option:=#1\do{
+		\StrCut{\option}{=}\optionname\optionvalue
+		\trim@spaces@in\optionname
+		\trim@spaces@in\optionvalue
+		\ifthenelse{\equal{\optionvalue}{}}{\PackageError{bibliography slide}{missing value for option '\option'!}{}}{}
+		\IfEqCase{\optionname}{% 
+			{title}{\edef\bibslidetitle{\optionvalue}}
+			{cite}{\edef\bibslidecitetype{\optionvalue}}
+			{style}{\edef\bibslidestyle{\optionvalue}}}
+			[\PackageError{bibliography slide}{unknown option '\option'!}{}]
 	}
-	\begin{frame}[allowframebreaks]{\bibtitle}
-		\nocite{*}
+	
+	\ifdef{\bibslidetitle}{}{
+		%% no title given: set default value according to language ngerman vs english%% set provided title
+		\def\bibslidetitle{\iflanguage{ngerman}{Quellen}{References}}
+	}
+
+	%% set plain frame style if requested
+	\ifdef{\bibslidestyle}{
+		\IfEqCase{\bibslidestyle}{%
+			{plain}{}
+			{footer}{\def\bibslidestyle{}}}
+		[\PackageError{bibliography slide}{illegal value '\bibslidestyle' for option 'style'!}{}]
+	}{
+		\def\bibslidestyle{}
+	}
+	\begin{frame}[allowframebreaks, \bibslidestyle]{\bibslidetitle}
+		%% print all bibliography entries if requested
+		\ifdef{\bibslidecitetype}{
+			\IfEqCase{\bibslidecitetype}{%
+				{all}{\nocite{*}}
+				{cited}{}}
+				[\PackageError{bibliography slide}{illegal value '\bibslidecitetype' for option 'cite'!}{}]
+		}{}
+
 		\renewcommand*{\bibfont}{\small}
 		\printbibliography
 	\end{frame}
