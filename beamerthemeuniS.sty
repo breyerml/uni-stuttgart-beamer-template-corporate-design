@@ -449,28 +449,41 @@ Scale = MatchUppercase
 \makeatother
 
 
-
-
-
-
-\newcommand{\appendixslide}[1]{
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% appenddix slide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\appendixslides}[1]{
 	\appendix
-	\input{#1}
+	\input{#1} % TODO:
 }
 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% bibliography slide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
-\newcommand{\bibresource}[1]{\gdef\@bibresource{#1}}
+\newcommand{\bibresource}[1]{
+	%% check if the given bibliography file exists, throw error otherwise
+	\IfFileExists{#1}{
+		\gdef\@bibresource{#1}
+	}{
+		\PackageError{Bibliography}{No such file '#1'!}{}
+	}
+}
+%% add bibliography
 \ifdef{\@bibresource}{\addbibresource{\@bibresource}}{}
 
 \newcommand{\bibliographyslide}[1][]{
 	\ifdef{\@bibresource}{
 		\ifthenelse{\isempty{#1}}{
+			%% no title given: set default value according to language ngerman vs english
 			\iflanguage{ngerman}{
 				\def\bibtitle{Quellen}
 			}{
 				\def\bibtitle{References}
 			}
 		}{
+			%% set provided title
 			\def\bibtitle{#1}
 		}
 		\begin{frame}{\bibtitle}
@@ -478,12 +491,10 @@ Scale = MatchUppercase
 			\printbibliography
 		\end{frame}
 	}{
-		\PackageError{Bibliography Frame}{Can't create bibliography frame since no bib resources are given!}{Please set bibresources to the path of your bibliography file.}
+		\PackageError{Bibliography Frame}{Can't create bibliography frame since no bib resources are given!}{}
 	}
 }
 \makeatother
-
-
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% section page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
