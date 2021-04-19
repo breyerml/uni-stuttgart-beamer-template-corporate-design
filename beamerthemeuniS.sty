@@ -69,9 +69,6 @@ Scale = MatchUppercase
 \usepackage{tabularx}
 
 
-\definecolor{orcidlogocol}{HTML}{A6CE39}
-
-
 \makeatletter
 \def\beamerrightmargin{\dimexpr\Gm@rmargin\relax}
 \makeatother
@@ -201,7 +198,6 @@ Scale = MatchUppercase
 		
 		%% background image
     	\ifdef{\@backgroundimage}{
-		
 			\node[anchor=north west] at ([xshift=-1em, yshift=1ex] current page.north west){\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\@backgroundimage}};
 			
 			\node[%
@@ -286,73 +282,87 @@ Scale = MatchUppercase
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% final slide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
-\newcommand{\speakerimage}[1]{\gdef\@speakerimage{#1}}
-
-\newcommand{\email}[2][]{
-	\ifthenelse{\equal{#1}{usetxt}}{
-		\gdef\@emailicon{\iflanguage{ngerman}{E-Mail}{email}}
+\newcommand{\speakerimage}[1]{
+	%% check if the given image exists, throw error otherwise
+	\IfFileExists{#1}{
+		\gdef\@speakerimage{#1}
 	}{
-		\gdef\@emailicon{\faIcon[regular]{envelope}}
+		\PackageError{Title Slide Background Image}{No such file '#1'!}{}
 	}
+}
+
+\newcommand{\email}[2][useicon]{
+	%% check if a correct option has been provided
+	\IfStrEqCase{#1}{% 
+		{useicon}{\gdef\@emailicon{\faIcon[regular]{envelope}}}
+		{usetxt}{\gdef\@emailicon{\iflanguage{ngerman}{E-Mail}{email}}}}
+		[\PackageError{email}{unknown option!}{}]
+	
 	\gdef\@email{\href{mailto:#2}{#2}}
 }
 
-\newcommand{\phone}[2][]{
-	\ifthenelse{\equal{#1}{usetxt}}{
-		\gdef\@phoneicon{\iflanguage{ngerman}{Telefon}{phone}}
-	}{
-		\gdef\@phoneicon{\faIcon{phone}}
-	}
+\newcommand{\phone}[2][useicon]{
+	%% check if a correct option has been provided
+	\IfStrEqCase{#1}{% 
+		{useicon}{\gdef\@phoneicon{\faIcon{phone}}}
+		{usetxt}{\gdef\@phoneicon{\iflanguage{ngerman}{Telefon}{phone}}}}
+		[\PackageError{phone}{unknown option!}{}]
+	
 	\gdef\@phone{\phonenumber{#2}}
 }
 
-\renewcommand{\fax}[2][]{
-	\ifthenelse{\equal{#1}{usetxt}}{
-		\gdef\@faxicon{\iflanguage{ngerman}{Fax}{fax}}
-	}{
-		\gdef\@faxicon{\faIcon{fax}}
-	}
+\renewcommand{\fax}[2][useicon]{
+	%% check if a correct option has been provided
+	\IfStrEqCase{#1}{% 
+		{useicon}{\gdef\@faxicon{\faIcon{fax}}}
+		{usetxt}{\gdef\@faxicon{\iflanguage{ngerman}{Fax}{fax}}}}
+		[\PackageError{fax}{unknown option!}{}]
+	
 	\gdef\@fax{#2}
 }
 
 
-\newcommand{\address}[4][]{
-	\ifthenelse{\equal{#1}{usetxt}}{
-		\gdef\@addressicon{\iflanguage{ngerman}{Adresse}{address}}
-	}{
-		\gdef\@addressicon{\faIcon{map-marker-alt}}
-	}
+\newcommand{\address}[4][useicon]{
+	%% check if a correct option has been provided
+	\IfStrEqCase{#1}{% 
+		{useicon}{\gdef\@addressicon{\faIcon{map-marker-alt}}}
+		{usetxt}{\gdef\@addressicon{\iflanguage{ngerman}{Adresse}{address}}}}
+		[\PackageError{address}{unknown option!}{}]
+		
 	\gdef\@street{#2}
 	\gdef\@zip{#3}
-	\def\room{\iflanguage{ngerman}{Raum}{Room}:}
-	\gdef\@address{\href{http://maps.google.com/?q=#2+#3}{\makecell[tl]{#2\\#3\\\room #4}}}
+	\gdef\@address{\href{http://maps.google.com/?q=#2+#3}{\makecell[tl]{#2\\#3\\\iflanguage{ngerman}{Raum}{Room}: #4}}}
 }
 
-\newcommand{\officehours}[2][]{
-	\ifthenelse{\equal{#1}{usetxt}}{
-		\gdef\@officehoursicon{\iflanguage{ngerman}{Sprechstunden}{office hours}}
-	}{
-		\gdef\@officehoursicon{\faIcon[regular]{calendar-check}}
-	}
+\newcommand{\officehours}[2][useicon]{
+	%% check if a correct option has been provided
+	\IfStrEqCase{#1}{% 
+		{useicon}{\gdef\@officehoursicon{\faIcon[regular]{calendar-check}}}
+		{usetxt}{\gdef\@officehoursicon{\iflanguage{ngerman}{Sprechstunden}{office hours}}}}
+		[\PackageError{officehours}{unknown option!}{}]
+	
 	\gdef\@officehours{#2}
 }
 
-\newcommand{\website}[2][]{
-	\ifthenelse{\equal{#1}{usetxt}}{
-		\gdef\@websiteicon{\iflanguage{ngerman}{Website}{website}}
-	}{
-		\gdef\@websiteicon{\faIcon{link}}
-	}
-	\gdef\@website{\url{#2}}
+\newcommand{\website}[2][useicon]{
+	%% check if a correct option has been provided
+	\IfStrEqCase{#1}{% 
+		{useicon}{\gdef\@websiteicon{\faIcon{link}}}
+		{usetxt}{\gdef\@websiteicon{\iflanguage{ngerman}{Website}{website}}}}
+		[\PackageError{website}{unknown option!}{}]
+	
+	\gdef\@website{\scriptsize\url{#2}}
+	%% create QR code to website
 	\gdef\@websiteqr{\textcolor{white}{\qrcode[height=1.25cm]{#2}}}
 }
 
-\newcommand{\orcid}[2][]{
-	\ifthenelse{\equal{#1}{usetxt}}{
-		\gdef\@orcidicon{ORCID}
-	}{
-		\gdef\@orcidicon{\textcolor{orcidlogocol}{\aiOrcid}}
-	}
+\newcommand{\orcid}[2][useicon]{
+	%% check if a correct option has been provided
+	\IfStrEqCase{#1}{% 
+		{useicon}{\gdef\@orcidicon{\textcolor[HTML]{A6CE39}{\aiOrcid}}}
+		{usetxt}{\gdef\@orcidicon{ORCID}}}
+		[\PackageError{orcid}{unknown option!}{}]
+	
 	\gdef\@orcid{\href{https://orcid.org/#2}{#2}}
 }
 
@@ -363,76 +373,85 @@ Scale = MatchUppercase
 }
 
 \newcommand{\finalslide}{
+	%% chech if the required values "title" and "author" are set
+	\ifdef{\@email}{}{\PackageError{final slide}{No email specified!}{}}
 	
-  \ifdef{\@email}{}{\PackageError{finalslide}{No email specified!}{}}
-	
-  \begin{frame}[plain]
-    \begin{tikzpicture}[overlay, remember picture]
-      \clip (current page.north west) rectangle (current page.south east);
+	\begin{frame}[plain]
+		\begin{tikzpicture}[overlay, remember picture]
+			\clip (current page.north west) rectangle (current page.south east);
 
-      % Background
-      \shade[%
-        top color=uniSlightblue,
-        bottom color=uniSblue,
-        shading angle=-45,
-        %opacity=.8
-        ]
-        (current page.north west) rectangle (current page.south east);
+			%% background
+			\shade[%
+			  top color=uniSlightblue,
+			  bottom color=uniSblue,
+			  shading angle=-45]
+			(current page.north west) rectangle (current page.south east);
         
-        \node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\href{\universitylink}{\pgfuseimage{unilogo_w}}};
+			\node[anchor=north west] at ([xshift=1cm, yshift=-1cm] current page.north west) {\href{\universitylink}{\pgfuseimage{unilogo_w}}};
         
-        \ifdef{\@websiteqr}{
-        	\node[anchor=south west] at (current page.south west) {\@websiteqr};
-        }{}
-
-    \end{tikzpicture}
-
-    \vspace{2cm}
-
-    \begin{columns}[T]
-      \begin{column}{2.5cm}
-      	\begin{minipage}[c][0.75\textheight][c]{\columnwidth}
-	    	\ifdef{\@speakerimage}{
-		    	\begin{tikzpicture}
-					\node[circle, minimum size=2.5cm, path picture={
-						\node at (path picture bounding box.center){\includegraphics[width=2.5cm]{\@speakerimage}};}] {};
-				\end{tikzpicture}
+			\ifdef{\@websiteqr}{
+				\node[anchor=south west] at (current page.south west) {\@websiteqr};
 			}{}
-   		\end{minipage}
-      \end{column}
-      \begin{column}{.75\textwidth}
-      	\begin{minipage}[c][0.75\textheight][c]{\columnwidth}
+		\end{tikzpicture}
 
-        \begin{beamercolorbox}
-          {palette tertiary}
-          \def\arraystretch{1.1}
-          \begin{tabular}{rl}
-            \multicolumn{2}{l}{\insertauthor} \\ % TODO: newline
-            \ifdef{\@institute}{\multicolumn{2}{l}{\insertinstitute} \\}{}
-            \ifdef{\@department}{\multicolumn{2}{l}{\itshape\insertdepartment} \\}{}
-          \end{tabular}\\[2ex]
-      	  
-      	  {
-	      	  \def\arraystretch{1.2}
-	      	  \footnotesize
-	          \begin{tabularx}{\columnwidth}{r X}
-	            \@emailicon & \@email \\
-	            \addoptionalinfo{\@phoneicon}{\@phone}
-	            \addoptionalinfo{\@faxicon}{\@fax}
-	            \addoptionalinfo{\@addressicon}{\@address}
-	            \addoptionalinfo{\@officehoursicon}{\@officehours}
-	            \addoptionalinfo{\@websiteicon}{\@website}
-	            \addoptionalinfo{\@orcidicon}{\@orcid}
-	          \end{tabularx}
-	      }
-        \end{beamercolorbox}
-      \end{minipage}
-      \end{column}
-    \end{columns}
-  \end{frame}
+    	\vspace{2cm}
+
+		\begin{columns}[T]
+			%% add speaker image to left column if provided
+			\begin{column}{2.5cm}
+				\begin{minipage}[c][0.75\textheight][c]{\columnwidth}
+	    			\ifdef{\@speakerimage}{
+		    			\begin{tikzpicture}
+							\node[circle, minimum size=2.5cm, path picture={
+							\node at (path picture bounding box.center) {\includegraphics[width=2.5cm]{\@speakerimage}};}] {};
+						\end{tikzpicture}
+					}{}
+				\end{minipage}
+			\end{column}
+			%% fill right column with all provided information
+			\begin{column}{.75\textwidth}
+				\begin{minipage}[c][0.75\textheight][c]{\columnwidth}
+
+					\begin{beamercolorbox}
+						{palette tertiary}
+
+						%% add author, institute and department
+						{
+							%% remove newlines from \author
+							\def\\{\relax\ifhmode\unskip\fi\space\ignorespaces}
+							\insertauthor
+						} \\
+						\ifdef{\@institute}{\insertinstitute \\}{}
+						\ifdef{\@department}{\textit{\insertdepartment} \\}{}
+ 						
+						\vspace*{0.5ex}
+						
+	      	  			{
+	      	  				%% add additional (mostly optional) information
+							\def\arraystretch{1.2}
+							\footnotesize
+							\begin{tabularx}{\columnwidth}{r X}
+								\@emailicon & \@email \\
+								\addoptionalinfo{\@phoneicon}{\@phone}
+								\addoptionalinfo{\@faxicon}{\@fax}
+								\addoptionalinfo{\@addressicon}{\@address}
+								\addoptionalinfo{\@officehoursicon}{\@officehours}
+								\addoptionalinfo{\@websiteicon}{\@website}
+								\addoptionalinfo{\@orcidicon}{\@orcid}
+							\end{tabularx}
+						}
+					\end{beamercolorbox}
+				\end{minipage}
+			\end{column}
+		\end{columns}
+	\end{frame}
 }
-
 \makeatother
+
+
+
+
+
 
 \newcommand{\appendixslide}[1]{
 	\appendix
