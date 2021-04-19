@@ -260,6 +260,25 @@ Scale = MatchUppercase
 }
 
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% table of contents slide %%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\tocslide}[1][]{
+	\ifthenelse{\isempty{#1}}{
+		\iflanguage{ngerman}{
+			\def\toctitle{Übersicht}
+		}{
+			\def\toctitle{Overview}
+		}
+	}{
+		\def\toctitle{#1}
+	}
+	
+	\begin{frame}{\toctitle}
+		\tableofcontents
+	\end{frame}
+}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% finalslide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
@@ -442,22 +461,6 @@ Scale = MatchUppercase
 \makeatother
 
 
-
-\newcommand{\tocslide}[1][]{
-	\ifthenelse{\isempty{#1}}{
-		\iflanguage{ngerman}{
-			\def\toctitle{Übersicht}
-		}{
-			\def\toctitle{Overview}
-		}
-	}{
-		\def\toctitle{#1}
-	}
-
-	\begin{frame}{\toctitle}
-		\tableofcontents
-	\end{frame}
-}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% section page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
