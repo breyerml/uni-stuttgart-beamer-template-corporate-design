@@ -57,7 +57,6 @@ Scale = MatchUppercase
 % necessary packages
 \usepackage{academicons}
 \usepackage{appendixnumberbeamer}
-\usepackage{biblatex}
 \usepackage{etoolbox}
 \usepackage{phonenumbers}
 \usepackage{qrcode}
@@ -367,6 +366,9 @@ Scale = MatchUppercase
 	%% chech if the required values "title" and "author" are set
 	\ifdef{\@email}{}{\PackageError{final slide}{No email specified!}{}}
 	
+	%% the final page shouldn't count for the slide counter
+	\addtocounter{framenumber}{-1}
+	
 	\begin{frame}[plain]
 		\begin{tikzpicture}[overlay, remember picture]
 			\clip (current page.north west) rectangle (current page.south east);
@@ -445,7 +447,7 @@ Scale = MatchUppercase
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\appendixslides}[1]{
 	\appendix
-	\input{#1} % TODO:
+	\input{#1}
 }
 
 
@@ -453,38 +455,25 @@ Scale = MatchUppercase
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% bibliography slide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
-\newcommand{\bibresource}[1]{
-	%% check if the given bibliography file exists, throw error otherwise
-	\IfFileExists{#1}{
-		\gdef\@bibresource{#1}
-	}{
-		\PackageError{Bibliography}{No such file '#1'!}{}
-	}
-}
-%% add bibliography
-\ifdef{\@bibresource}{\addbibresource{\@bibresource}}{}
-
 \newcommand{\bibliographyslide}[1][]{
-	\ifdef{\@bibresource}{
-		\ifthenelse{\isempty{#1}}{
-			%% no title given: set default value according to language ngerman vs english
-			\iflanguage{ngerman}{
-				\def\bibtitle{Quellen}
-			}{
-				\def\bibtitle{References}
-			}
+	\ifthenelse{\isempty{#1}}{
+		%% no title given: set default value according to language ngerman vs english
+		\iflanguage{ngerman}{
+			\def\bibtitle{Quellen}
 		}{
-			%% set provided title
-			\def\bibtitle{#1}
+			\def\bibtitle{References}
 		}
-		\begin{frame}{\bibtitle}
-			\renewcommand*{\bibfont}{\tiny}
-			\printbibliography
-		\end{frame}
 	}{
-		\PackageError{Bibliography Frame}{Can't create bibliography frame since no bib resources are given!}{}
+		%% set provided title
+		\def\bibtitle{#1}
 	}
+	\begin{frame}[allowframebreaks]{\bibtitle}
+		\nocite{*}
+		\renewcommand*{\bibfont}{\small}
+		\printbibliography
+	\end{frame}
 }
+\setbeamertemplate{frametitle continuation}{}
 \makeatother
 
 
