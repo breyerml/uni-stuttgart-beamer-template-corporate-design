@@ -67,6 +67,7 @@ Scale = MatchUppercase
 \usepackage{xstring} % switch case over parameters in \newcommand
 \usepackage{fontawesome5}
 \usepackage{tabularx}
+\usepackage{trimspaces}
 
 
 \makeatletter
@@ -490,22 +491,40 @@ Scale = MatchUppercase
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% section page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TODO: besser
-% automatically display \sectionpage at beginning of every \section{}
-\AtBeginSection[]{%
-	\begin{frame}[plain]
-		\sectionpage
-	\end{frame}
-	% uncomment block in order to display toc after every sectionpage
-	%\begin{frame}[c, plain]
-	%  \tableofcontents[currentsection]
-	%\end{frame}
+\makeatletter
+\newcommand{\setAtBeginSection}[1]{
+	%% check which options have been provided
+	\def\nextitem{\def\nextitem{,}}%
+	\@for \option:=#1\do{
+		\trim@spaces@in\option
+		\IfEqCase{\option}{% 
+			{showsectionslide}{\gdef\@showsectionslide{}}
+			{showsectiontoc}{\gdef\@showsectiontoc{}}}
+			[\PackageError{setAtBeginSection}{unknown option '\option'!}{}]
+	}
+
+	\AtBeginSection[]{
+		%% display section page if reuested
+		\ifdef{\@showsectionslide}{
+			\begin{frame}[plain]
+				\sectionpage
+			\end{frame}
+		}{}
+		%% display toc after every section page if reuested
+		\ifdef{\@showsectiontoc}{
+			\begin{frame}[c, plain]
+				\tableofcontents[currentsection]
+			\end{frame}
+		}{}
+	}
 }
 
-\setbeamertemplate{section page}%
+\setbeamertemplate{section page}
 {
 	%% sectin page(s) shouldn't count for the slide counter
-	\addtocounter{framenumber}{-1}
+	%% decrement once for each inserted slide
+	\ifdef{\@showsectionslide}{\addtocounter{framenumber}{-1}}{}
+	\ifdef{\@showsectiontoc}{\addtocounter{framenumber}{-1}}{}
 	\begin{tikzpicture}[overlay, remember picture]
 		\setlength{\circlesize}{.9\textheight}
 		\clip (current page.north west) rectangle (current page.south east);
@@ -542,6 +561,7 @@ Scale = MatchUppercase
 		at ([xshift=-.1\circlesize, yshift=-.3\circlesize] sectiontitle.south east) {\thesection};
 	\end{tikzpicture}
 }
+\makeatother
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
