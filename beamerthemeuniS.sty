@@ -101,15 +101,14 @@ Scale = MatchUppercase
 % define a few pictures used throughout the slides
 \iflanguage{ngerman}{
 	\def\university{Universität Stuttgart}
-	\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo.pdf}    % UniS logo for title slide
-	\pgfdeclareimage[height=1cm]{unilogow}{.logos/unilogo_w.pdf} % (white) UniS logo for final slide
-	\def\universitylink{https://www.uni-stuttgart.de/}
 }{
-	\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo_en.pdf}    % UniS logo for title slide
-	\pgfdeclareimage[height=1cm]{unilogow}{.logos/unilogo_w_en.pdf} % (white) UniS logo for final slide
 	\def\university{University of Stuttgart}
-	\def\universitylink{https://www.uni-stuttgart.de/en/}
 }
+
+
+\pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo\iflanguage{ngerman}{}{_en}.pdf}
+\pgfdeclareimage[height=1cm]{unilogo_w}{.logos/unilogo_w\iflanguage{ngerman}{}{_en}.pdf}
+\def\universitylink{https://www.uni-stuttgart.de/\iflanguage{ngerman}{}{en/}}
 
 % TODO: besser
 % automatically display \sectionpage at beginning of every \section{}
@@ -121,6 +120,143 @@ Scale = MatchUppercase
 	%\begin{frame}[c, plain]
 	%  \tableofcontents[currentsection]
 	%\end{frame}
+}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% title page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\newcommand{\cclicense}[2][]{
+	%% get version, if version is unsupported, throw error
+	\IfStrEqCase{#1}{%
+		{}{\def\ccversion{4.0}}
+		{4.0}{\def\ccversion{4.0}}
+		{3.0}{\def\ccversion{3.0}}
+		{2.5}{\def\ccversion{2.5}}
+		{2.0}{\def\ccversion{2.0}}
+		{1.0}{\def\ccversion{1.0}}} 
+		[\PackageError{CC License}{Illegal Creative Commons License Version!}{}]
+	
+	%% get license, if license is unsupported, throw error
+	\IfStrEqCase{#2}{% 
+		{by}{\def\cctype{by}}
+		{by-nc}{\def\cctype{by-nc}}
+		{by-nc-nd}{\def\cctype{by-nc-nd}}
+		{by-nc-na}{\def\cctype{by-nc-na}}
+		{by-nd}{\def\cctype{by-nd}} 
+		{by-sa}{\def\cctype{by-sa}} 
+		{cc0}{\def\cctype{cc-zero}} 
+		{cc-zero}{\def\cctype{cc-zero}}}
+		[\PackageError{CC License}{Illegal Creative Commons License Type!}{}]
+	
+	%% get license url
+	\def\cclang{\iflanguage{ngerman}{german}{\languagename}}
+	\gdef\@cclicenselink{https://creativecommons.org/licenses/\cctype/\ccversion/deed.\cclang}
+	
+	%% get license file
+	\gdef\@cclicenseimage{.license/\cctype.png}
+}
+
+\newcommand{\backgroundimage}[1]{
+	%% check if the given image exists, throw error otherwise
+	\IfFileExists{#1}{
+		\gdef\@backgroundimage{#1}
+	}{
+		\PackageError{Title Slide Background Image}{No such file '#1'!}{}
+	}
+}
+
+\renewcommand{\institute}[2][]{
+	%% define short and long name for institute
+	\gdef\@institute{#2}
+	\ifthenelse{\isempty{#1}}{}{\gdef\@institutefooter{#1}}
+}
+\renewcommand{\insertinstitute}{\ifdef{\@institute}{\@institute}{}}
+\renewcommand{\insertshortinstitute}{\ifdef{\@institutefooter}{\@institutefooter}{\insertinstitute}}
+
+\newcommand{\department}[3][]{
+	%% define short and long name for department
+	\gdef\@department{#2}
+	\ifthenelse{\isempty{#1}}{}{\gdef\@departmentfooter{#1}}
+}
+\newcommand{\insertdepartment}{\ifdef{\@department}{\@department}{}}
+\newcommand{\insertshortdepartment}{\ifdef{\@departmentfooter}{\@departmentfooter}{\insertdepartment}}
+
+
+\newlength{\circlesize}
+\setbeamertemplate{title page}
+{
+	%% chech if the required values "title" and "author" are set
+	\ifdefempty{\inserttitle}{\PackageError{Title}{Missing title!}{}}{}
+	\setbox0=\hbox{\insertauthor\unskip}\ifdim\wd0=0pt
+		\PackageError{Author}{Missing author!}{}
+	\fi
+	
+	%% the title page shouldn't count for the slide counter
+	\addtocounter{framenumber}{-1}
+ 	\setlength{\circlesize}{1.12\textheight}
+ 	\begin{tikzpicture}[overlay, remember picture]
+    	\clip (current page.north west) rectangle (current page.south east);
+		
+		%% background image
+    	\ifdef{\@backgroundimage}{
+		
+			\node[anchor=north west] at ([xshift=-1em, yshift=1ex] current page.north west){\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\@backgroundimage}};
+			
+			\node[%
+			  rectangle,
+			  draw=white,
+			  fill=white,
+			  anchor=north west,
+			  minimum width=2\textwidth,
+			  minimum height=3cm]
+			at (current page.north west) {};
+		}{
+			\shade[%
+			  top color=uniSlightblue,
+			  bottom color=uniSblue,
+			  shading angle=-45]
+			(current page.north west) rectangle (current page.south east);
+		}
+	
+		%% uni logo
+		\node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm] current page.north west) {\href{\universitylink}{\pgfuseimage{\ifdef{\@backgroundimage}{unilogo}{unilogo_w}}}};
+
+		%% title
+		\node[%
+		  circle,
+		  fill=uniSgray,
+		  text=white,
+		  anchor=south east,
+		  minimum size=\circlesize,
+		  align=left,
+		  font=\bfseries\Huge]
+		(title) at ([yshift=-.05\circlesize] current page.south east) {\inserttitle};
+		
+		\setlength{\circlesize}{.2\textheight}
+
+		%% author
+		\node[%
+		  circle,
+		  fill=white,
+		  anchor=center,
+		  minimum size=\circlesize,
+		  align=center,
+		  font=\bfseries\normalsize]
+		(author) at ([xshift=-.1\circlesize, yshift=-.6\circlesize] title.north west) {\insertauthor};
+      
+		\ifdef{\@cclicenseimage}{
+			\node[inner sep=0pt, outer sep=0pt, anchor=south west] at (current page.south west) {\href{\@cclicenselink}{\includegraphics[width=1.75cm]{\@cclicenseimage}}};
+		}{}
+	\end{tikzpicture}
+}
+\makeatother
+
+\newcommand{\titleslide}{
+	\begin{frame}[plain]
+		\maketitle
+	\end{frame}
 }
 
 
@@ -220,7 +356,7 @@ Scale = MatchUppercase
         ]
         (current page.north west) rectangle (current page.south east);
         
-        \node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\href{\universitylink}{\pgfuseimage{unilogow}}};
+        \node[anchor=north west] at ([xshift=1cm, yshift=-1cm]current page.north west) {\href{\universitylink}{\pgfuseimage{unilogo_w}}};
         
         \ifdef{\@websiteqr}{
         	\node[anchor=south west] at (current page.south west) {\@websiteqr};
@@ -248,7 +384,7 @@ Scale = MatchUppercase
           {palette tertiary}
           \def\arraystretch{1.1}
           \begin{tabular}{rl}
-            \multicolumn{2}{l}{\insertauthor} \\
+            \multicolumn{2}{l}{\insertauthor} \\ % TODO: newline
             \ifdef{\@institute}{\multicolumn{2}{l}{\insertinstitute} \\}{}
             \ifdef{\@department}{\multicolumn{2}{l}{\itshape\insertdepartment} \\}{}
           \end{tabular}\\[2ex]
@@ -305,127 +441,7 @@ Scale = MatchUppercase
 }
 \makeatother
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% title page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\makeatletter
-\newcommand{\cclicense}[2][]{
-	%% get version, if version is unsupported, throw error
-	\IfStrEqCase{#1}{%
-		{}{\def\ccversion{4.0}}
-		{4.0}{\def\ccversion{4.0}}
-		{3.0}{\def\ccversion{3.0}}
-		{2.5}{\def\ccversion{2.5}}
-		{2.0}{\def\ccversion{2.0}}
-		{1.0}{\def\ccversion{1.0}}} 
-		[\PackageError{CC License}{Illegal Creative Commons License Version!}{}]
-	
-	%% get license, if license is unsupported, throw error
-	\IfStrEqCase{#2}{% 
-		{by}{\def\cctype{by}}
-		{by-nc}{\def\cctype{by-nc}}
-		{by-nc-nd}{\def\cctype{by-nc-nd}}
-		{by-nc-na}{\def\cctype{by-nc-na}}
-		{by-nd}{\def\cctype{by-nd}} 
-		{by-sa}{\def\cctype{by-sa}} 
-		{cc0}{\def\cctype{cc-zero}} 
-		{cc-zero}{\def\cctype{cc-zero}}}
-		[\PackageError{CC License}{Illegal Creative Commons License Type!}{}]
-	
-	%% get license url
-	\def\cclang{\iflanguage{ngerman}{german}{\languagename}}
-	\gdef\@cclicenselink{https://creativecommons.org/licenses/\cctype/\ccversion/deed.\cclang}
-	
-	%% get license file
-	\gdef\@cclicenseimage{.license/\cctype.png}
-}
 
-\newcommand{\backgroundimage}[1]{\gdef\@backgroundimage{#1}}
-
-\renewcommand{\institute}[2][]{
-	\gdef\@institute{#2}
-	\ifthenelse{\isempty{#1}}{}{\gdef\@institutefooter{#1}}
-}
-\renewcommand{\insertinstitute}{\ifdef{\@institute}{\@institute}{}}
-\renewcommand{\insertshortinstitute}{\ifdef{\@institutefooter}{\@institutefooter}{\insertinstitute}}
-
-\newcommand{\department}[3][]{
-	\gdef\@department{#2}
-	\ifthenelse{\isempty{#1}}{}{\gdef\@departmentfooter{#1}}
-}
-\newcommand{\insertdepartment}{\ifdef{\@department}{\@department}{}}
-\newcommand{\insertshortdepartment}{\ifdef{\@departmentfooter}{\@departmentfooter}{\insertdepartment}}
-
-
-\newlength{\circlesize}
-\setbeamertemplate{title page}%
-{
-  % sanity checks
-  \ifdefempty{\inserttitle}{\PackageError{Title}{Missing title!}{}}{}
-  % TODO: check missing author
-
-  \addtocounter{framenumber}{-1}
-  \setlength{\circlesize}{1.12\textheight}
-  \begin{tikzpicture}[overlay, remember picture]
-    \clip (current page.north west) rectangle (current page.south east);
-
-    \ifdef{\@backgroundimage}{
-	    % background image
-	    \node[anchor=north west] at ([xshift=-1em, yshift=1ex] current page.north west){\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\@backgroundimage}};
-
-	    % Uni logo
-	    \node[%
-	    rectangle,
-	    draw=white,
-	    fill=white,
-	    anchor=north west,
-	    minimum width=2\textwidth,
-	    minimum height=3cm]
-	    at (current page.north west) {};
-	    \node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm]current page.north west) {\href{\universitylink}{\pgfuseimage{unilogo}}};
-	}{
-		\shade[%
-		top color=uniSlightblue,
-		bottom color=uniSblue,
-		shading angle=-45,
-		%opacity=.8
-		]
-		(current page.north west) rectangle (current page.south east);
-		\node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm]current page.north west) {\href{\universitylink}{\pgfuseimage{unilogow}}};
-	}
-
-    % Title
-    \node[%
-      circle,
-      fill=uniSgray,
-      text=white,
-      anchor=south east,
-      minimum size=\circlesize,
-      align=left,
-      font=\bfseries\Huge]
-      (title) at ([yshift=-.05\circlesize]current page.south east) {\inserttitle};
-    \setlength{\circlesize}{.2\textheight}
-
-    % Author
-    \node[%
-      circle,
-      fill=white,
-      anchor=center,
-      minimum size=\circlesize,
-      align=left,
-      font=\bfseries\normalsize]
-      at ([xshift=-.1\circlesize, yshift=-.6\circlesize]title.north west) {\insertauthor};
-      
-      \ifdef{\@cclicenseimage}{
-	      \node[inner sep=0pt, outer sep=0pt, anchor=south west] at (current page.south west) {\href{\@cclicenselink}{\includegraphics[width=1.75cm]{\@cclicenseimage}}};
-      }{}
-  \end{tikzpicture}
-}
-\makeatother
-
-\newcommand{\titleslide}{
-\begin{frame}[plain]
-	\maketitle
-\end{frame}
-}
 
 \newcommand{\tocslide}[1][]{
 	\ifthenelse{\isempty{#1}}{
