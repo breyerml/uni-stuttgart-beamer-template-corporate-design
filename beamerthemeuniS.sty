@@ -265,12 +265,14 @@ Scale = MatchUppercase
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\tocslide}[1][]{
 	\ifthenelse{\isempty{#1}}{
+		%% no title given: set default value according to language ngerman vs english
 		\iflanguage{ngerman}{
 			\def\toctitle{Übersicht}
 		}{
 			\def\toctitle{Overview}
 		}
 	}{
+		%% set provided title
 		\def\toctitle{#1}
 	}
 	
@@ -280,7 +282,9 @@ Scale = MatchUppercase
 }
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% finalslide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% final slide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
 \newcommand{\speakerimage}[1]{\gdef\@speakerimage{#1}}
 
