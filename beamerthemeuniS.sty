@@ -107,17 +107,7 @@ Scale = MatchUppercase
 \pgfdeclareimage[height=1cm]{unilogo_w}{.logos/unilogo_w\iflanguage{ngerman}{}{_en}.pdf}
 \def\universitylink{https://www.uni-stuttgart.de/\iflanguage{ngerman}{}{en/}}
 
-% TODO: besser
-% automatically display \sectionpage at beginning of every \section{}
-\AtBeginSection[]{%
-	\begin{frame}[plain]
-		\sectionpage
-	\end{frame}
-	% uncomment block in order to display toc after every sectionpage
-	%\begin{frame}[c, plain]
-	%  \tableofcontents[currentsection]
-	%\end{frame}
-}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -497,85 +487,109 @@ Scale = MatchUppercase
 \makeatother
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% section page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% section page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% TODO: besser
+% automatically display \sectionpage at beginning of every \section{}
+\AtBeginSection[]{%
+	\begin{frame}[plain]
+		\sectionpage
+	\end{frame}
+	% uncomment block in order to display toc after every sectionpage
+	%\begin{frame}[c, plain]
+	%  \tableofcontents[currentsection]
+	%\end{frame}
+}
 
 \setbeamertemplate{section page}%
 {
-  \addtocounter{framenumber}{-1}
-  \begin{tikzpicture}[overlay, remember picture]
-    \setlength{\circlesize}{.9\textheight}
-    \clip (current page.north west) rectangle (current page.south east);
-    \shade[%
-      top color=uniSlightblue,
-      bottom color=uniSblue,
-      shading angle=-45]
-      (current page.north west) rectangle (current page.south east);
-    \node[%
-      circle,
-      fill=white,
-      anchor=north west,
-      minimum size=\circlesize,
-      text width=.5\circlesize,
-      align=left,
-      font=\bfseries\Huge]
-      (sectiontitle) at ([xshift=.1\circlesize, yshift=-.2\circlesize]current page.north west) {\insertsection};
-    \setlength{\circlesize}{.2\textheight}
-    \node[%
-      circle,
-      fill=uniSgray,
-      text=white,
-      anchor=center,
-      minimum size=\circlesize,
-      align=left,
-      font=\bfseries\Huge]
-      at ([xshift=-.1\circlesize, yshift=-.3\circlesize]sectiontitle.south east) {\thesection};
-  \end{tikzpicture}
+	%% sectin page(s) shouldn't count for the slide counter
+	\addtocounter{framenumber}{-1}
+	\begin{tikzpicture}[overlay, remember picture]
+		\setlength{\circlesize}{.9\textheight}
+		\clip (current page.north west) rectangle (current page.south east);
+    
+    	%% background
+		\shade[%
+		  top color=uniSlightblue,
+		  bottom color=uniSblue,
+		  shading angle=-45]
+		(current page.north west) rectangle (current page.south east);
+		
+		%% section
+		\node[%
+		  circle,
+		  fill=white,
+		  anchor=north west,
+		  minimum size=\circlesize,
+		  text width=.5\circlesize,
+		  align=left,
+		  font=\bfseries\Huge]
+		(sectiontitle) at ([xshift=.1\circlesize, yshift=-.2\circlesize]current page.north west) {\insertsection};
+		
+		\setlength{\circlesize}{.2\textheight}
+		
+		%% section number
+		\node[%
+		  circle,
+		  fill=uniSgray,
+		  text=white,
+		  anchor=center,
+		  minimum size=\circlesize,
+		  align=left,
+		  font=\bfseries\Huge]
+		at ([xshift=-.1\circlesize, yshift=-.3\circlesize] sectiontitle.south east) {\thesection};
+	\end{tikzpicture}
 }
 
 
-\setbeamertemplate{section in toc}{%
-  \usebeamercolor[bg]{item projected}%
-  \begin{tikzpicture}[node distance=.5em]
-    \node[anchor=base, baseline, fill=uniSgray, text=white, circle, inner sep=0pt, minimum size=2em] (no) {\inserttocsectionnumber};
-    \node[right=of no] {\color{uniSblue} \inserttocsection};
-  \end{tikzpicture}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% miscellaneous %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\setbeamertemplate{section in toc}{
+	%% change style for table of contents (including enumeration marks)
+	\usebeamercolor[bg]{item projected}
+	\begin{tikzpicture}[node distance=.5em]
+		\node[anchor=base, baseline, fill=uniSgray, text=white, circle, inner sep=0pt, minimum size=2em] (no) {\inserttocsectionnumber};
+		\node[right=of no] {\color{uniSblue} \inserttocsection};
+	\end{tikzpicture}
 }
 
-\setbeamertemplate{frametitle}%
-{
-  \nointerlineskip
-  \begin{beamercolorbox}[leftskip=2ex, ht=2em,wd=\paperwidth]{frametitle}
-    \bfseries\Large\insertframetitle\strut
-  \end{beamercolorbox}
+\setbeamertemplate{frametitle}{
+	%% change style for all frame titles
+	\nointerlineskip
+	\begin{beamercolorbox}[leftskip=2ex, ht=2em,wd=\paperwidth]{frametitle}
+		\bfseries\Large\insertframetitle\strut
+	\end{beamercolorbox}
 }
 
 \setbeamertemplate{itemize/enumerate body begin}{\footnotesize}
-
 \setbeamertemplate{itemize/enumerate subbody begin}{\footnotesize}
 
-\setbeamertemplate{itemize item}{%
-  \usebeamercolor[bg]{item projected}%
-  \begin{tikzpicture}
-    \draw[uniSlightblue,fill=uniSlightblue, opacity=0] (0,0) circle (.1695em);
-    \draw[uniSlightblue,fill=uniSlightblue] (.1695em, .1695em) circle (.1695em);
-  \end{tikzpicture}
+\setbeamertemplate{itemize item}{
+	\usebeamercolor[bg]{item projected}
+	\begin{tikzpicture}
+		\draw[uniSlightblue,fill=uniSlightblue, opacity=0] (0,0) circle (.1695em);
+		\draw[uniSlightblue,fill=uniSlightblue] (.1695em, .1695em) circle (.1695em);
+	\end{tikzpicture}
 }
 
 \setbeamertemplate{bibliography item}{\insertbiblabel}
 
 \setbeamertemplate{blocks}[rounded][shadow=true]
 
-\defbeamertemplate{note page}{notepageuniS}
-{
-  \insertvrule{0.45\paperheight}{uniSgray!20}%
-  \vskip-0.45\paperheight
-  \insertslideintonotes{0.45}
+\defbeamertemplate{note page}{notepageuniS}{
+	%% change style for speaker note pages
+	\insertvrule{0.45\paperheight}{uniSgray!20}
+	\vskip-0.45\paperheight
+	\insertslideintonotes{0.45}
 
-  \noindent\hspace{1em}\begin{minipage}{.9\paperwidth}
-    \footnotesize
-    \setlist{noitemsep}
-    \insertnote
-  \end{minipage}
+	\noindent\hspace{1em}\begin{minipage}{.9\paperwidth}
+		\footnotesize
+		\setlist{noitemsep}
+		\insertnote
+	\end{minipage}
 }
 
 \setbeamertemplate{note page}[notepageuniS]
