@@ -64,6 +64,7 @@ Scale = MatchUppercase
 \usepackage{tikz}
 \usepackage{xargs}
 \usepackage{xifthen}
+\usepackage{xstring} % switch case over parameters in \newcommand
 \usepackage{fontawesome5}
 \usepackage{tabularx}
 
@@ -122,38 +123,6 @@ Scale = MatchUppercase
 	%\end{frame}
 }
 
-
-\makeatletter
-\newcommand{\cclicense}[2][]{
-	\ifthenelse{\isempty{#1}}{
-		\def\ccversion{4.0}	
-	}{
-		\ifthenelse{\equal{#1}{4.0}}{
-			\def\ccversion{4.0}	
-		}{
-			\ifthenelse{\equal{#1}{3.0}}{
-				\def\ccversion{3.0}
-			}{
-				\PackageError{CC License}{Illegal Creative Commons License Version (4.0 or 3.0)!}{}
-			}
-		}
-	}
-	
-	
-	\def\cclang{\iflanguage{ngerman}{german}{\languagename}}
-	\gdef\@cclicenselink{https://creativecommons.org/licenses/#2/\ccversion/deed.\cclang}
-	
-	\IfFileExists{.license/#2.png}{
-		\gdef\@cclicenseimage{.license/#2.png}
-	}{
-		\ifthenelse{\equal{#2}{cc0}}{
-			\gdef\@cclicenseimage{.license/cc-zero.png}
-		}{
-			\PackageError{CC License}{Illegal Creative Commons License!}{}
-		}
-	}
-}
-\makeatother
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% finalslide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -338,6 +307,37 @@ Scale = MatchUppercase
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% title page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
+\newcommand{\cclicense}[2][]{
+	%% get version, if version is unsupported, throw error
+	\IfStrEqCase{#1}{%
+		{}{\def\ccversion{4.0}}
+		{4.0}{\def\ccversion{4.0}}
+		{3.0}{\def\ccversion{3.0}}
+		{2.5}{\def\ccversion{2.5}}
+		{2.0}{\def\ccversion{2.0}}
+		{1.0}{\def\ccversion{1.0}}} 
+		[\PackageError{CC License}{Illegal Creative Commons License Version!}{}]
+	
+	%% get license, if license is unsupported, throw error
+	\IfStrEqCase{#2}{% 
+		{by}{\def\cctype{by}}
+		{by-nc}{\def\cctype{by-nc}}
+		{by-nc-nd}{\def\cctype{by-nc-nd}}
+		{by-nc-na}{\def\cctype{by-nc-na}}
+		{by-nd}{\def\cctype{by-nd}} 
+		{by-sa}{\def\cctype{by-sa}} 
+		{cc0}{\def\cctype{cc-zero}} 
+		{cc-zero}{\def\cctype{cc-zero}}}
+		[\PackageError{CC License}{Illegal Creative Commons License Type!}{}]
+	
+	%% get license url
+	\def\cclang{\iflanguage{ngerman}{german}{\languagename}}
+	\gdef\@cclicenselink{https://creativecommons.org/licenses/\cctype/\ccversion/deed.\cclang}
+	
+	%% get license file
+	\gdef\@cclicenseimage{.license/\cctype.png}
+}
+
 \newcommand{\backgroundimage}[1]{\gdef\@backgroundimage{#1}}
 
 \renewcommand{\institute}[2][]{
