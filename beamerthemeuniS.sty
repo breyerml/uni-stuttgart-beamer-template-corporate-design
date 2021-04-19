@@ -39,7 +39,11 @@
 
 
 %% necessary packages for the styles
+\ifPDFTeX
+	\usepackage{svg}
+\else
 \usepackage{academicons}
+\fi
 \usepackage{appendixnumberbeamer}
 \usepackage{etoolbox}
 \usepackage{phonenumbers}
@@ -330,14 +334,19 @@
 	\gdef\@websiteqr{\textcolor{white}{\qrcode[height=1.25cm]{#2}}}
 }
 
-\newcommand{\orcid}[2][useicon]{
-	%% check if a correct option has been provided
-	\IfStrEqCase{#1}{% 
-		{useicon}{\gdef\@orcidicon{\textcolor[HTML]{A6CE39}{\aiOrcid}}}
-		{usetxt}{\gdef\@orcidicon{ORCID}}}
-		[\PackageError{orcid}{unknown option!}{}]
+\newcommand{\orcid}[1]{
+	% TODO: have a closer look at guidlines
+	%% https://info.orcid.org/brand-guidelines/:
+	%% "We do not currently allow references to authorized ORCID iDs without using the iD icon."
+	\ifPDFTeX
+		%% include image if using pdf latex
+		\gdef\@orcidicon{\includesvg[width=9pt, svgpath =.logos]{ORCIDiD}}
+	\else
+		%% include academicsicon otherwise
+		\gdef\@orcidicon{\tikz\node[circle, fill=white, inner sep=-1.5] at (0, 0) {\textcolor[HTML]{A6CE39}{\aiOrcid}};}
+	\fi
 	
-	\gdef\@orcid{\href{https://orcid.org/#2}{#2}}
+	\gdef\@orcid{\href{https://orcid.org/#1}{#1}}
 }
 
 \newcommand{\addoptionalinfo}[2]{

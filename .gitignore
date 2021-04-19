@@ -163,6 +163,9 @@ acs-*.bib
 _minted*
 *.pyg
 
+# svg
+svg-inkscape/
+
 # morewrites
 *.mw
 
