@@ -9,52 +9,36 @@
 %
 % See the file doc/licenses/LICENSE for more details.
 
-% reset footnote counter per page, adapt footnotes
+
+%% reset footnote counter per page, adapt footnotes
 \usepackage{perpage}
 \MakePerPage{footnote}
 \renewcommand*{\thefootnote}{\fnsymbol{footnote}}
 \renewcommand\footnoterule{}
 
-% set up fonts
+%% set up fonts
 \usepackage{lmodern}
 \usepackage{csquotes}
-
 \usepackage{iftex}
+
 \ifLuaTeX
-
-\usepackage{fontspec}
-\setsansfont[
-BoldFont = UniversforUniS65Bd-Regular,
-ItalicFont = UniversforUniS45LtObl-Rg,
-BoldItalicFont = UniversforUniS45LtObl-Rg,
-Scale = MatchUppercase
-]{UniversforUniS55Rm-Regular}
-
-\renewcommand{\familydefault}{\sfdefault}
-
+	%% use Uni Stuttgart font with LuaTex
+	\usepackage{fontspec}
+	\setsansfont[
+	BoldFont = UniversforUniS65Bd-Regular,
+	ItalicFont = UniversforUniS45LtObl-Rg,
+	BoldItalicFont = UniversforUniS45LtObl-Rg,
+	Scale = MatchUppercase
+	]{UniversforUniS55Rm-Regular}
+	\renewcommand{\familydefault}{\sfdefault}
 \else
-
-\usepackage[T1]{fontenc}
-\usepackage{inputenc}
-
+	%% use normal fonts
+	\usepackage[T1]{fontenc}
+	\usepackage{inputenc}
 \fi
 
 
-% fix some latex quirks
-\usepackage{xspace}
-\usepackage[xspace]{ellipsis}
-\usepackage{fixmath}
-\usepackage[stretch=10]{microtype}
-
-
-% use fancy enumerate/itemize and restore beamer layout
-\usepackage{enumitem}\setitemize{%
-  label=\usebeamerfont*{itemize item}
-  \usebeamercolor[fg]{itemize item}
-  \usebeamertemplate{itemize item}
-}
-
-% necessary packages
+%% necessary packages for the styles
 \usepackage{academicons}
 \usepackage{appendixnumberbeamer}
 \usepackage{etoolbox}
@@ -63,20 +47,25 @@ Scale = MatchUppercase
 \usepackage{tikz}
 \usepackage{xargs}
 \usepackage{xifthen}
-\usepackage{xstring} % switch case over parameters in \newcommand
+\usepackage{xstring} 				% switch case over parameters in \newcommand
 \usepackage{fontawesome5}
 \usepackage{tabularx}
 \usepackage{trimspaces}
 
+%% fix some latex quirks
+\usepackage{xspace}
+\usepackage[xspace]{ellipsis}
+\usepackage{fixmath}
+\usepackage[stretch=10]{microtype}
 
-\makeatletter
-\def\beamerrightmargin{\dimexpr\Gm@rmargin\relax}
-\makeatother
 
-\makeatletter
-\newcommand\changemode[1]{%
-	\gdef\beamer@currentmode{#1}}
-\makeatother
+
+%% use fancy enumerate/itemize and restore beamer layout
+\usepackage{enumitem}\setitemize{%
+  label=\usebeamerfont*{itemize item}
+  \usebeamercolor[fg]{itemize item}
+  \usebeamertemplate{itemize item}
+}
 
 
 \mode<presentation>
@@ -95,25 +84,20 @@ Scale = MatchUppercase
 \setbeamertemplate{navigation symbols}{}
 
 
-% define a few pictures used throughout the slides
-\iflanguage{ngerman}{
-	\def\university{Universität Stuttgart}
-}{
-	\def\university{University of Stuttgart}
-}
 
-
+%% define constants used in multiple places
 \pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo\iflanguage{ngerman}{}{_en}.pdf}
 \pgfdeclareimage[height=1cm]{unilogo_w}{.logos/unilogo_w\iflanguage{ngerman}{}{_en}.pdf}
 \def\universitylink{https://www.uni-stuttgart.de/\iflanguage{ngerman}{}{en/}}
-
-
+\def\university{\iflanguage{ngerman}{Universität Stuttgart}{University of Stuttgart}}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% title page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
+\def\beamerrightmargin{\dimexpr\Gm@rmargin\relax}
+
 \newcommand{\cclicense}[2][]{
 	%% get version, if version is unsupported, throw error
 	\IfStrEqCase{#1}{%
@@ -445,6 +429,11 @@ Scale = MatchUppercase
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% appenddix slide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+\newcommand\changemode[1]{%
+	\gdef\beamer@currentmode{#1}}
+\makeatother
+
 \newcommand{\appendixslides}[1]{
 	\appendix
 	\input{#1}
