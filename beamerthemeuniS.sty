@@ -442,6 +442,7 @@
 \newcommand{\changemode}[1]{\gdef\beamer@currentmode{#1}}
 
 \newcommand{\appendixslides}[2][]{
+	%% check which options have been provided
 	\def\nextitem{\def\nextitem{,}}%
 	\@for \option:=#1\do{
 		\StrCut{\option}{=}\optionname\optionvalue
@@ -482,7 +483,6 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
 \newcommand{\bibliographyslide}[1][]{
-	% TODO: clean up
 	%% check which options have been provided
 	\def\nextitem{\def\nextitem{,}}%
 	\@for \option:=#1\do{
@@ -498,7 +498,7 @@
 	}
 	
 	\ifdef{\bibslidetitle}{}{
-		%% no title given: set default value according to language ngerman vs english%% set provided title
+		%% no title given: set default value according to language ngerman vs english
 		\def\bibslidetitle{\iflanguage{ngerman}{Quellen}{References}}
 	}
 
