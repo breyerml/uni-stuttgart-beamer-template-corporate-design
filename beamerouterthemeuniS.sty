@@ -1,3 +1,4 @@
+% !TeX root = slides.tex
 % Copyright 2017 by Christian Senger <senger@inue.uni-stuttgart.de>
 %
 % This file may be distributed and/or modified
@@ -13,22 +14,23 @@
 \setbeamercolor{framenumber in head/foot}{parent=palette quaternary}
 
 \usesectionheadtemplate
-  {\hfill\insertsectionhead}
-  {\hfill\color{fg!50!bg}\insertsectionhead}
+	{\hfill\insertsectionhead}
+	{\hfill\color{fg!50!bg}\insertsectionhead}
 
 \makeatletter
 \defbeamertemplate*{footline}{altsplit theme}
 {%
-  \leavevmode%
-  \hbox{
- \begin{beamercolorbox}[wd=.9\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=2ex, rightskip=10ex]{title in head/foot}%
-    \usebeamerfont{title in head/foot}\insertshortauthor, \university\ifdef{\@institute}{, \insertshortinstitute}{}\ifdef{\@department}{, \insertshortdepartment}{} : \insertshorttitle
-  \end{beamercolorbox}%
-  \begin{beamercolorbox}[wd=.1\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=2ex,rightskip=2ex]{framenumber in head/foot}%
-    \usebeamerfont{title in head/foot}\hfill\insertframenumber
-  \end{beamercolorbox}
-  }%
-  \vskip0pt%
+	\def\university{\iflanguage{ngerman}{Universität Stuttgart}{University of Stuttgart}}
+	\leavevmode%
+	\hbox{
+		\begin{beamercolorbox}[wd=.9\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=2ex, rightskip=10ex]{title in head/foot}%
+			\usebeamerfont{title in head/foot}\insertshortauthor, \university\ifdef{\@institute}{, \insertshortinstitute}{}\ifdef{\@department}{ - \insertshortdepartment}{} : \insertshorttitle
+		\end{beamercolorbox}%
+		\begin{beamercolorbox}[wd=.1\paperwidth,ht=2.5ex,dp=1.125ex,leftskip=2ex,rightskip=2ex]{framenumber in head/foot}%
+			\usebeamerfont{title in head/foot}\hfill\insertframenumber
+		\end{beamercolorbox}
+	}%
+	\vskip0pt%
 }
 \makeatother
 
