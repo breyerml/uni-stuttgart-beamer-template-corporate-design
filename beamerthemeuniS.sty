@@ -439,14 +439,42 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% appenddix slide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
-\newcommand\changemode[1]{%
-	\gdef\beamer@currentmode{#1}}
-\makeatother
+\newcommand{\changemode}[1]{\gdef\beamer@currentmode{#1}}
 
-\newcommand{\appendixslides}[1]{
+\newcommand{\appendixslides}[2][]{
+	\def\nextitem{\def\nextitem{,}}%
+	\@for \option:=#1\do{
+		\StrCut{\option}{=}\optionname\optionvalue
+		\trim@spaces@in\optionname
+		\trim@spaces@in\optionvalue
+		\ifthenelse{\equal{\optionvalue}{}}{\PackageError{appendix slides}{missing value for option '\option'!}{}}{}
+		\IfEqCase{\optionname}{% 
+			{section}{\edef\appslidesection{\optionvalue}}
+			{mode}{\edef\appslidecitemode{\optionvalue}}}
+		[\PackageError{appendix slides}{unknown option '\option'!}{}]
+	}
+	
+	%% start appendix
 	\appendix
-	\input{#1}
+	
+	%% add section slide (without number) and the given title if requested
+	\ifdef{\appslidesection}{
+		\gdef\@inappendix{}
+		\section{\appslidesection}
+	}{}
+	
+	%% change to the given mode (beamer vs. handout) if requested
+	\ifdef{\appslidecitemode}{
+		\IfEqCase{\appslidecitemode}{%
+			{beamer}{\changemode{beamer}}
+			{handout}{\changemode{handout}}}
+			[\PackageError{appendix slides}{illegal value '\appslidecitemode' for option 'mode'!}{}]
+	}{}
+	
+	%% actual appendix slides
+	\input{#2}
 }
+\makeatother
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -479,7 +507,7 @@
 		\IfEqCase{\bibslidestyle}{%
 			{plain}{}
 			{footer}{\def\bibslidestyle{}}}
-		[\PackageError{bibliography slide}{illegal value '\bibslidestyle' for option 'style'!}{}]
+			[\PackageError{bibliography slide}{illegal value '\bibslidestyle' for option 'style'!}{}]
 	}{
 		\def\bibslidestyle{}
 	}
@@ -561,16 +589,19 @@
 		
 		\setlength{\circlesize}{.2\textheight}
 		
-		%% section number
-		\node[%
-		  circle,
-		  fill=uniSgray,
-		  text=white,
-		  anchor=center,
-		  minimum size=\circlesize,
-		  align=left,
-		  font=\bfseries\Huge]
-		at ([xshift=-.1\circlesize, yshift=-.3\circlesize] sectiontitle.south east) {\thesection};
+		%% do not display section number in appendix section
+		\ifdef{\@inappendix}{}{
+			%% section number
+			\node[%
+			  circle,
+			  fill=uniSgray,
+			  text=white,
+			  anchor=center,
+			  minimum size=\circlesize,
+			  align=left,
+			  font=\bfseries\Huge]
+			at ([xshift=-.1\circlesize, yshift=-.3\circlesize] sectiontitle.south east) {\thesection};
+		}
 	\end{tikzpicture}
 }
 \makeatother
