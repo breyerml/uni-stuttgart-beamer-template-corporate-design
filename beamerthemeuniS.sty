@@ -10,6 +10,10 @@
 % See the file doc/licenses/LICENSE for more details.
 
 
+\DeclareOption{totalframenumber}{\gdef\@usetotalframenumber{}}
+\DeclareOption*{\PackageError{Theme}{unknown option '\CurrentOption'!}{}}
+\ProcessOptions
+
 %% reset footnote counter per page, adapt footnotes
 \usepackage{perpage}
 \MakePerPage{footnote}
