@@ -59,6 +59,7 @@
 \usepackage{fontawesome5}  %% icons for final slide
 \usepackage{tabularx}  %% fixed width table for last slide
 \usepackage{trimspaces}  %% be able to trim whitespaces from options in optional parameter lists
+\usepackage{xkeyval}
 
 %% fix some latex quirks
 \usepackage{xspace}
@@ -442,39 +443,17 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% appenddix slide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
-\newcommand{\changemode}[1]{\gdef\beamer@currentmode{#1}}
+%% add section slide (without number) and the given title if requested
+\define@key{appendix}{section}{\gdef\@inappendix{}\section{#1}}
+%% change to the given mode (beamer vs. handout) if requested
+\define@choicekey*{appendix}{mode}[\val]{beamer, handout}{\xdef\beamer@currentmode{\val}}
 
 \newcommand{\appendixslides}[2][]{
-	%% check which options have been provided
-	\def\nextitem{\def\nextitem{,}}%
-	\@for \option:=#1\do{
-		\StrCut{\option}{=}\optionname\optionvalue
-		\trim@spaces@in\optionname
-		\trim@spaces@in\optionvalue
-		\ifthenelse{\equal{\optionvalue}{}}{\PackageError{appendix slides}{missing value for option '\option'!}{}}{}
-		\IfEqCase{\optionname}{% 
-			{section}{\edef\appslidesection{\optionvalue}}
-			{mode}{\edef\appslidecitemode{\optionvalue}}}
-		[\PackageError{appendix slides}{unknown option '\option'!}{}]
-	}
+	%% process options
+	\setkeys{appendix}{#1}
 	
 	%% start appendix
 	\appendix
-	
-	%% add section slide (without number) and the given title if requested
-	\ifdef{\appslidesection}{
-		\gdef\@inappendix{}
-		\section{\appslidesection}
-	}{}
-	
-	%% change to the given mode (beamer vs. handout) if requested
-	\ifdef{\appslidecitemode}{
-		\IfEqCase{\appslidecitemode}{%
-			{beamer}{\changemode{beamer}}
-			{handout}{\changemode{handout}}}
-			[\PackageError{appendix slides}{illegal value '\appslidecitemode' for option 'mode'!}{}]
-	}{}
-	
 	%% actual appendix slides
 	\input{#2}
 }
