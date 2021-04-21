@@ -11,6 +11,8 @@
 
 
 \DeclareOption{totalframenumber}{\gdef\@usetotalframenumber{}}
+\DeclareOption{sectionslide}{\gdef\@usesectionslide{}}
+\DeclareOption{sectiontoc}{\gdef\@usesectiontoc{}}
 \DeclareOption*{\PackageError{Theme}{unknown option '\CurrentOption'!}{}}
 \ProcessOptions
 
@@ -491,31 +493,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% section page %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
-\newcommand{\setAtBeginSection}[1]{
-	%% check which options have been provided
-	\def\nextitem{\def\nextitem{,}}%
-	\@for \option:=#1\do{
-		\trim@spaces@in\option
-		\IfEqCase{\option}{% 
-			{showsectionslide}{\gdef\@showsectionslide{}}
-			{showsectiontoc}{\gdef\@showsectiontoc{}}}
-			[\PackageError{setAtBeginSection}{unknown option '\option'!}{}]
-	}
-
-	\AtBeginSection[]{
-		%% display section page if reuested
-		\ifdef{\@showsectionslide}{
-			\begin{frame}[plain]
-				\sectionpage
-			\end{frame}
-		}{}
-		%% display toc after every section page if reuested
-		\ifdef{\@showsectiontoc}{
-			\begin{frame}[c, plain]
-				\tableofcontents[currentsection]
-			\end{frame}
-		}{}
-	}
+\AtBeginSection[]{
+	%% display section page if reuested
+	\ifdef{\@usesectionslide}{
+		\begin{frame}[plain]
+			\sectionpage
+		\end{frame}
+	}{}
+	%% display toc after every section page if reuested
+	\ifdef{\@usesectiontoc}{
+		\begin{frame}[c, plain]
+			\tableofcontents[currentsection]
+		\end{frame}
+	}{}
 }
 
 \setbeamertemplate{section page}
