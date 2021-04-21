@@ -458,50 +458,27 @@
 	\input{#2}
 }
 \makeatother
+% TODO: correct appendix <-> bibliography frame number
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%% bibliography slide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
+%% set frame title if requested
+\define@cmdkey{bib}{title}{}
+%% cite all entries in bibliography file if requested
+\define@choicekey*{bib}{cite}[\val\nr]{all, cited}{\ifnum\nr=0\nocite{*}\fi}
+%% change to the given frame style to plain if requested
+\define@choicekey*{bib}{style}[\val\nr]{plain, footer}{\ifnum\nr=0\def\bib@style{plain}\fi}
+
 \newcommand{\bibliographyslide}[1][]{
-	%% check which options have been provided
-	\def\nextitem{\def\nextitem{,}}%
-	\@for \option:=#1\do{
-		\StrCut{\option}{=}\optionname\optionvalue
-		\trim@spaces@in\optionname
-		\trim@spaces@in\optionvalue
-		\ifthenelse{\equal{\optionvalue}{}}{\PackageError{bibliography slide}{missing value for option '\option'!}{}}{}
-		\IfEqCase{\optionname}{% 
-			{title}{\edef\bibslidetitle{\optionvalue}}
-			{cite}{\edef\bibslidecitetype{\optionvalue}}
-			{style}{\edef\bibslidestyle{\optionvalue}}}
-			[\PackageError{bibliography slide}{unknown option '\option'!}{}]
-	}
-	
-	\ifdef{\bibslidetitle}{}{
-		%% no title given: set default value according to language ngerman vs english
-		\def\bibslidetitle{\iflanguage{ngerman}{Quellen}{References}}
-	}
+	%% process options, set default frame title
+	\setkeys{bib}{title=\iflanguage{ngerman}{Quellen}{References}, #1}
+	%% define style if not provided by user
+	\ifdef{\bib@style}{}{\def\bib@style{}}
 
-	%% set plain frame style if requested
-	\ifdef{\bibslidestyle}{
-		\IfEqCase{\bibslidestyle}{%
-			{plain}{}
-			{footer}{\def\bibslidestyle{}}}
-			[\PackageError{bibliography slide}{illegal value '\bibslidestyle' for option 'style'!}{}]
-	}{
-		\def\bibslidestyle{}
-	}
-	\begin{frame}[allowframebreaks, \bibslidestyle]{\bibslidetitle}
-		%% print all bibliography entries if requested
-		\ifdef{\bibslidecitetype}{
-			\IfEqCase{\bibslidecitetype}{%
-				{all}{\nocite{*}}
-				{cited}{}}
-				[\PackageError{bibliography slide}{illegal value '\bibslidecitetype' for option 'cite'!}{}]
-		}{}
-
+	\begin{frame}[allowframebreaks, \bib@style]{\cmdKV@bib@title}
 		\renewcommand*{\bibfont}{\small}
 		\printbibliography
 	\end{frame}
