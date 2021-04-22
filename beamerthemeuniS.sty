@@ -135,21 +135,17 @@
 	\xdef\@cclic@image{.license/\cclic@type.\cclic@currency.png}
 }
 
-\renewcommand{\institute}[2][]{
+\renewcommand{\institute}[2]{
 	%% define short and long name for institute
-	\gdef\@institute{#2}
-	\ifthenelse{\isempty{#1}}{}{\gdef\@institutefooter{#1}}
+	\gdef\@institute@long{#1}
+	\gdef\@institute@short{#2}
 }
-\renewcommand{\insertinstitute}{\ifdef{\@institute}{\@institute}{}}
-\renewcommand{\insertshortinstitute}{\ifdef{\@institutefooter}{\@institutefooter}{\insertinstitute}}
 
-\newcommand{\department}[3][]{
+\newcommand{\department}[2]{
 	%% define short and long name for department
-	\gdef\@department{#2}
-	\ifthenelse{\isempty{#1}}{}{\gdef\@departmentfooter{#1}}
+	\gdef\@department@long{#1}
+	\gdef\@department@short{#2}
 }
-\newcommand{\insertdepartment}{\ifdef{\@department}{\@department}{}}
-\newcommand{\insertshortdepartment}{\ifdef{\@departmentfooter}{\@departmentfooter}{\insertdepartment}}
 
 
 \newlength{\circlesize}
@@ -402,8 +398,8 @@
 							\def\\{\relax\ifhmode\unskip\fi\space\ignorespaces}
 							\insertauthor
 						} \\
-						\ifdef{\@institute}{\insertinstitute \\}{}
-						\ifdef{\@department}{\textit{\insertdepartment} \\}{}
+						\ifdef{\@institute@long}{\@institute@long \\}{}
+						\ifdef{\@department@long}{\textit{\@department@long} \\}{}
  						
 						\vspace*{0.5ex}
 						
