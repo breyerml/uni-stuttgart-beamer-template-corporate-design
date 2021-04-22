@@ -425,6 +425,9 @@
 				\end{minipage}
 			\end{column}
 		\end{columns}
+	
+		%% start appendix
+		\appendix
 	\end{frame}
 }
 \makeatother
@@ -443,13 +446,10 @@
 	%% process options
 	\setkeys{appendix}{#1}
 	
-	%% start appendix
-	\appendix
 	%% actual appendix slides
 	\input{#2}
 }
 \makeatother
-% TODO: correct appendix <-> bibliography frame number
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
