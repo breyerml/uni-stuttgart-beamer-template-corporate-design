@@ -121,24 +121,20 @@
 	%% process options
 	\setkeys{cclic}{version=4.0, currency=EUR, #1}
 	
-	%% get license, if license is unsupported, throw error
-	\IfStrEqCase{#2}{% 
-		{by}{\def\cclic@type{by}}
-		{by-nc}{\def\cclic@type{by-nc}}
-		{by-nc-nd}{\def\cclic@type{by-nc-nd}}
-		{by-nc-na}{\def\cclic@type{by-nc-na}}
-		{by-nd}{\def\cclic@type{by-nd}} 
-		{by-sa}{\def\cclic@type{by-sa}} 
-		{cc0}{\def\cclic@type{cc-zero}} 
-		{cc-zero}{\def\cclic@type{cc-zero}}}
-		[\PackageError{CC License}{Illegal Creative Commons License Type!}{}]
+	%% get license type
+	\edef\cclic@type{\explowercase{#2}}
 	
 	%% get license url
 	\edef\cclic@lang{\iflanguage{ngerman}{german}{\languagename}}
-	\xdef\@cclic@url{https://creativecommons.org/licenses/\cclic@type/\cclic@version/deed.\cclic@lang}
+	\ifthenelse{\equal{\cclic@type}{cc-zero}}{
+		\xdef\@cclic@url{https://creativecommons.org/publicdomain/zero/1.0/deed.\cclic@lang}
+	}{
+		\xdef\@cclic@url{https://creativecommons.org/licenses/\cclic@type/\cclic@version/deed.\cclic@lang}
+	}
 	
 	%% get license file
 	\xdef\@cclic@image{.license/\cclic@type.\cclic@currency.png}
+	\IfFileExists{\@cclic@image}{}{\PackageError{CC License}{Illegal Creative Commons License Type '#2'!}{Valid Creative Commons License Types are 'by', 'by-nc', 'by-nc-nd', 'by-nc-sa', 'by-nd', 'by-sa' and 'cc-zero'.}}
 }
 
 \newlength{\circlesize}
