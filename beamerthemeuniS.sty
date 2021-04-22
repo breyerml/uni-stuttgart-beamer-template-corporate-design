@@ -13,6 +13,7 @@
 
 \define@boolkeys{theme}[theme@]{totalframenumber, sectionslide, sectiontoc}[true]
 \presetkeys{theme}{totalframenumber=false, sectionslide=false, sectiontoc=false}{}
+\define@cmdkey{theme}[theme@]{titleimage}{}
 
 \ProcessOptionsX<theme>
 
@@ -138,15 +139,6 @@
 	\xdef\@cclic@image{.license/\cclic@type.\cclic@currency.png}
 }
 
-\newcommand{\backgroundimage}[1]{
-	%% check if the given image exists, throw error otherwise
-	\IfFileExists{#1}{
-		\gdef\@backgroundimage{#1}
-	}{
-		\PackageError{Title Slide Background Image}{No such file '#1'!}{}
-	}
-}
-
 \renewcommand{\institute}[2][]{
 	%% define short and long name for institute
 	\gdef\@institute{#2}
@@ -180,8 +172,8 @@
     	\clip (current page.north west) rectangle (current page.south east);
 		
 		%% background image
-    	\ifdef{\@backgroundimage}{
-			\node[anchor=north west] at ([xshift=-1em, yshift=1ex] current page.north west){\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\@backgroundimage}};
+    	\ifdef{\theme@titleimage}{
+			\node[anchor=north west] at ([xshift=-1em, yshift=1ex] current page.north west){\includegraphics[width=\textwidth+1em+2\beamerrightmargin]{\theme@titleimage}};
 			
 			\node[%
 			  rectangle,
@@ -200,7 +192,7 @@
 		}
 	
 		%% uni logo
-		\node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm] current page.north west) {\href{\universitylink}{\pgfuseimage{\ifdef{\@backgroundimage}{unilogo}{unilogo_w}}}};
+		\node[anchor=north west] (logo) at ([xshift=1cm, yshift=-1cm] current page.north west) {\href{\universitylink}{\pgfuseimage{\ifdef{\theme@titleimage}{unilogo}{unilogo_w}}}};
 
 		%% title
 		\node[%
