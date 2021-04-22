@@ -9,12 +9,14 @@
 %
 % See the file doc/licenses/LICENSE for more details.
 
+\usepackage{xkeyval}
 
-\DeclareOption{totalframenumber}{\gdef\@usetotalframenumber{}}
-\DeclareOption{sectionslide}{\gdef\@usesectionslide{}}
-\DeclareOption{sectiontoc}{\gdef\@usesectiontoc{}}
-\DeclareOption*{\PackageError{Theme}{unknown option '\CurrentOption'!}{}}
-\ProcessOptions
+\define@boolkeys{theme}[theme@]{totalframenumber, sectionslide, sectiontoc}[true]
+\presetkeys{theme}{totalframenumber=false, sectionslide=false, sectiontoc=false}{}
+
+\ProcessOptionsX<theme>
+
+
 
 %% reset footnote counter per page, adapt footnotes
 \usepackage{perpage}
@@ -61,7 +63,6 @@
 \usepackage{fontawesome5}  %% icons for final slide
 \usepackage{tabularx}  %% fixed width table for last slide
 \usepackage{trimspaces}  %% be able to trim whitespaces from options in optional parameter lists
-\usepackage{xkeyval}
 
 %% fix some latex quirks
 \usepackage{xspace}
@@ -493,25 +494,29 @@
 \makeatletter
 \AtBeginSection[]{
 	%% display section page if reuested
-	\ifdef{\@usesectionslide}{
+	\iftheme@sectionslide
 		\begin{frame}[plain]
 			\sectionpage
 		\end{frame}
-	}{}
+	\fi
 	%% display toc after every section page if reuested
-	\ifdef{\@usesectiontoc}{
+	\iftheme@sectiontoc
 		\begin{frame}[c, plain]
 			\tableofcontents[currentsection]
 		\end{frame}
-	}{}
+	\fi
 }
 
 \setbeamertemplate{section page}
 {
 	%% sectin page(s) shouldn't count for the slide counter
 	%% decrement once for each inserted slide
-	\ifdef{\@showsectionslide}{\addtocounter{framenumber}{-1}}{}
-	\ifdef{\@showsectiontoc}{\addtocounter{framenumber}{-1}}{}
+	\iftheme@sectionslide
+		\addtocounter{framenumber}{-1}
+	\fi
+	\iftheme@sectiontoc
+		\addtocounter{framenumber}{-1}
+	\fi
 	\begin{tikzpicture}[overlay, remember picture]
 		\setlength{\circlesize}{.9\textheight}
 		\clip (current page.north west) rectangle (current page.south east);
