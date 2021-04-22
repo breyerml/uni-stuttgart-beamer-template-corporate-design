@@ -9,6 +9,7 @@
 %
 % See the file doc/licenses/LICENSE for more details.
 
+
 \usepackage{xkeyval}
 
 \define@boolkeys{theme}[theme@]{totalframenumber, sectionslide, sectiontoc}[true]
@@ -16,7 +17,6 @@
 \define@cmdkey{theme}[theme@]{titleimage}{}
 
 \ProcessOptionsX<theme>
-
 
 
 %% reset footnote counter per page, adapt footnotes
@@ -54,12 +54,9 @@
 \usepackage{phonenumbers}  %% correctly typeset phone numbers
 \usepackage{qrcode}  %% create QR codes
 \usepackage{tikz}
-\usepackage{xargs}  %% interal logic
 \usepackage{xifthen}  %% interal logic
-\usepackage{xstring}  %% switch case over optional parameters
 \usepackage{fontawesome5}  %% icons for final slide
 \usepackage{tabularx}  %% fixed width table for last slide
-\usepackage{trimspaces}  %% be able to trim whitespaces from options in optional parameter lists
 
 %% fix some latex quirks
 \usepackage{xspace}
@@ -68,8 +65,8 @@
 \usepackage[stretch=10]{microtype}
 
 
+%% expandable lowercase function
 \usepackage{expl3}
-
 \ExplSyntaxOn
 \cs_set_eq:NN \explowercase \text_lowercase:n
 \ExplSyntaxOff
@@ -104,6 +101,7 @@
 \pgfdeclareimage[height=1cm]{unilogo}{.logos/unilogo\iflanguage{ngerman}{}{_en}.pdf}
 \pgfdeclareimage[height=1cm]{unilogo_w}{.logos/unilogo_w\iflanguage{ngerman}{}{_en}.pdf}
 \def\universitylink{https://www.uni-stuttgart.de/\iflanguage{ngerman}{}{en/}}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -270,16 +268,8 @@
 	\gdef\@department@short{#3}
 }
 
-
-\newcommand{\speakerimage}[1]{
-	%% check if the given image exists, throw error otherwise
-	\IfFileExists{#1}{
-		\gdef\@speakerimage{#1}
-	}{
-		\PackageError{Title Slide Background Image}{No such file '#1'!}{}
-	}
-
-}
+%% define speaker image
+\newcommand{\speakerimage}[1]{\gdef\@speakerimage{#1}}
 
 %% if the option 'labeltxt' is present, set its value accordingly (or to default values based on current language)
 \define@cmdkey{email}{labeltxt}[\iflanguage{ngerman}{E-Mail}{email}]{}
