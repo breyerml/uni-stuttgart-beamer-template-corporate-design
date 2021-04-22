@@ -337,7 +337,7 @@
 	%% "We do not currently allow references to authorized ORCID iDs without using the iD icon."
 	\ifPDFTeX
 		%% include image if using pdf latex
-		\gdef\@orcidicon{\includesvg[width=9pt, svgpath =.logos]{ORCIDiD}}
+		\gdef\@orcidicon{\includegraphics[width=9pt]{.logos/ORCIDiD.pdf}}
 	\else
 		%% include academicsicon otherwise
 		\gdef\@orcidicon{\tikz\node[circle, fill=white, inner sep=-1.5] at (0, 0) {\textcolor[HTML]{A6CE39}{\aiOrcid}};}
