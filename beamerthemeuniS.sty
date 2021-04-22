@@ -49,9 +49,6 @@
 
 
 %% necessary packages for the styles
-\ifLuaTeX
-	\usepackage{academicons}  %% use integrated icon if compiled with LuaTeX
-\fi
 \usepackage{appendixnumberbeamer}
 \usepackage{etoolbox}  %% interal logic
 \usepackage{phonenumbers}  %% correctly typeset phone numbers
@@ -341,14 +338,9 @@
 	% TODO: have a closer look at guidlines
 	%% https://info.orcid.org/brand-guidelines/:
 	%% "We do not currently allow references to authorized ORCID iDs without using the iD icon."
-	\ifPDFTeX
-		%% include image if using pdf latex
-		\gdef\@orcid@icon{\includegraphics[width=9pt]{.logos/ORCIDiD.pdf}}
-	\else
-		%% include academicsicon otherwise
-		\gdef\@orcid@icon{\tikz\node[circle, fill=white, inner sep=-1.5] at (0, 0) {\textcolor[HTML]{A6CE39}{\aiOrcid}};}
-	\fi
 	
+	%% include ORCIDiD icon as pdf
+	\gdef\@orcid@icon{\raisebox{-1.25pt}{\includegraphics[width=9pt]{.logos/ORCIDiD.pdf}}}
 	\gdef\@orcid{\href{https://orcid.org/#1}{#1}}
 }
 
