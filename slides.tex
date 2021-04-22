@@ -66,6 +66,9 @@ aspectratio=169,% for widescreen (16:9) presentations
 \usepackage{hyperref}
 \usepackage{pgf}
 \usepackage{todonotes}
+% default use inline todos
+\presetkeys{todonotes}{inline}{}
+\setlength {\marginparwidth }{2cm} 
 \usepackage{xcolor}
 
 \usepackage{etoolbox}
@@ -96,9 +99,6 @@ aspectratio=169,% for widescreen (16:9) presentations
 % set fontsize to explicit value (in pt)
 \newcommand{\setfontsize}[1]{\fontsize{#1pt}{1.2\dimexpr#1pt\relax}\selectfont}
 
-% default use inline todos
-\presetkeys{todonotes}{inline}{}
-
 % patch marvosym right arrow
 \appto{\MVRightarrow}{\xspace}
 \appto{\MVRightArrow}{\xspace}
@@ -111,7 +111,7 @@ aspectratio=169,% for widescreen (16:9) presentations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usetheme[
-	totalframenumber, 
+%	totalframenumber, 
 	sectionslide, 
 %	sectiontoc,
 %	titleimage=figures/bg.jpg,

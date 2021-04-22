@@ -27,7 +27,6 @@
 
 %% set up fonts
 \usepackage{lmodern}
-\usepackage{csquotes}
 \usepackage{iftex}
 
 \ifLuaTeX
@@ -46,12 +45,12 @@
 	\usepackage{inputenc}
 \fi
 
+\usepackage{csquotes}
+
 
 %% necessary packages for the styles
-\ifPDFTeX
-	\usepackage{svg} %% use external svg if compiled with PDFTeX
-\else
-	\usepackage{academicons}  %% use integrated icon if not compiled with PDFTeX
+\ifLuaTeX
+	\usepackage{academicons}  %% use integrated icon if compiled with LuaTeX
 \fi
 \usepackage{appendixnumberbeamer}
 \usepackage{etoolbox}  %% interal logic
