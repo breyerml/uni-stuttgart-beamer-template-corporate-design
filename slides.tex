@@ -109,6 +109,7 @@ aspectratio=169,% for widescreen (16:9) presentations
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%% set theme options
 \usetheme[
 %	totalframenumber, 
 	sectionslide, 
@@ -117,9 +118,7 @@ aspectratio=169,% for widescreen (16:9) presentations
 ]{uniS}
 
 
-% icons can be disabled with the optional [usetxt] option
-
-% specify mandatory information
+%% specify mandatory information
 \title[Title footer]{Title}
 \author[Author footer]{Author}
 \email{Marcel.Breyer@ipvs.uni-stuttgart.de}
@@ -134,6 +133,9 @@ aspectratio=169,% for widescreen (16:9) presentations
 \institute{Insitute for Parallel and Distributed Systems}{IPVS}
 \department{Simulation of Large Systems}{SGS}
 
+%% other optional information for the final slide
+%% optional argument:
+%%     - labeltxt=...: changes the icons to text, default dependent on set language
 \phone{+49 711 685-88427}
 \fax{+49 000 000-00000}
 \address{Universitätsstraße 38}{70569 Stuttgart, Germany}{2.164}
@@ -141,8 +143,11 @@ aspectratio=169,% for widescreen (16:9) presentations
 \website{https://www.ipvs.uni-stuttgart.de/institute/team/Breyer/}
 \orcid{0000-0000-0000-0000}
 
+
 %\speakerimage{figures/speaker.jpg}
 
+
+%% add bibliography ressource, necessary when \bibliographyslide is used
 %\addbibresource{bibliography.bib}
 
 
@@ -159,7 +164,7 @@ aspectratio=169,% for widescreen (16:9) presentations
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% slides %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
-    % TITLE + TABLE OF CONTENTS
+    %% create title slide
 	\titleslide
 	
 	%% create table of contents slide
@@ -169,13 +174,14 @@ aspectratio=169,% for widescreen (16:9) presentations
 	\tocslide
 	
 	
+	
 	% CONTENT
 	\input{content/content}
 	
 	
 	
 	%% create final slide containing information about the speaker
-\finalslide
+	\finalslide
 	
 	%% create appendix slides
 	%% required argument: tex file containing the appendix frames
