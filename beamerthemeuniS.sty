@@ -108,35 +108,33 @@
 \makeatletter
 \def\beamerrightmargin{\dimexpr\Gm@rmargin\relax}
 
+%% get cc license version
+\define@choicekey*{cclic}{version}[\val]{4.0, 3.0, 2.5, 2.0, 1.0}{\edef\cclic@version{\val}}
+%% get cclicense currency
+\define@choicekey*{cclic}{currency}[\val]{eur, usd}{\edef\cclic@currency{\val}}
+
 \newcommand{\cclicense}[2][]{
-	%% get version, if version is unsupported, throw error
-	\IfStrEqCase{#1}{%
-		{}{\def\ccversion{4.0}}
-		{4.0}{\def\ccversion{4.0}}
-		{3.0}{\def\ccversion{3.0}}
-		{2.5}{\def\ccversion{2.5}}
-		{2.0}{\def\ccversion{2.0}}
-		{1.0}{\def\ccversion{1.0}}} 
-		[\PackageError{CC License}{Illegal Creative Commons License Version!}{}]
+	%% process options
+	\setkeys{cclic}{version=4.0, currency=EUR, #1}
 	
 	%% get license, if license is unsupported, throw error
 	\IfStrEqCase{#2}{% 
-		{by}{\def\cctype{by}}
-		{by-nc}{\def\cctype{by-nc}}
-		{by-nc-nd}{\def\cctype{by-nc-nd}}
-		{by-nc-na}{\def\cctype{by-nc-na}}
-		{by-nd}{\def\cctype{by-nd}} 
-		{by-sa}{\def\cctype{by-sa}} 
-		{cc0}{\def\cctype{cc-zero}} 
-		{cc-zero}{\def\cctype{cc-zero}}}
+		{by}{\def\cclic@type{by}}
+		{by-nc}{\def\cclic@type{by-nc}}
+		{by-nc-nd}{\def\cclic@type{by-nc-nd}}
+		{by-nc-na}{\def\cclic@type{by-nc-na}}
+		{by-nd}{\def\cclic@type{by-nd}} 
+		{by-sa}{\def\cclic@type{by-sa}} 
+		{cc0}{\def\cclic@type{cc-zero}} 
+		{cc-zero}{\def\cclic@type{cc-zero}}}
 		[\PackageError{CC License}{Illegal Creative Commons License Type!}{}]
 	
 	%% get license url
-	\def\cclang{\iflanguage{ngerman}{german}{\languagename}}
-	\gdef\@cclicenselink{https://creativecommons.org/licenses/\cctype/\ccversion/deed.\cclang}
+	\edef\cclic@lang{\iflanguage{ngerman}{german}{\languagename}}
+	\xdef\@cclic@url{https://creativecommons.org/licenses/\cclic@type/\cclic@version/deed.\cclic@lang}
 	
 	%% get license file
-	\gdef\@cclicenseimage{.license/\cctype.png}
+	\xdef\@cclic@image{.license/\cclic@type.\cclic@currency.png}
 }
 
 \newcommand{\backgroundimage}[1]{
@@ -226,8 +224,8 @@
 		  font=\bfseries\normalsize]
 		(author) at ([xshift=-.1\circlesize, yshift=-.6\circlesize] title.north west) {\insertauthor};
       
-		\ifdef{\@cclicenseimage}{
-			\node[inner sep=0pt, outer sep=0pt, anchor=south west] at (current page.south west) {\href{\@cclicenselink}{\includegraphics[width=1.75cm]{\@cclicenseimage}}};
+		\ifdef{\@cclic@image}{
+			\node[inner sep=0pt, outer sep=0pt, anchor=south west] at (current page.south west) {\href{\@cclic@url}{\includegraphics[width=1.75cm]{\@cclic@image}}};
 		}{}
 	\end{tikzpicture}
 }
