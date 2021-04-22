@@ -68,6 +68,12 @@
 \usepackage[stretch=10]{microtype}
 
 
+\usepackage{expl3}
+
+\ExplSyntaxOn
+\cs_set_eq:NN \explowercase \text_lowercase:n
+\ExplSyntaxOff
+
 
 %% use fancy enumerate/itemize and restore beamer layout
 \usepackage{enumitem}\setitemize{%
@@ -134,19 +140,6 @@
 	%% get license file
 	\xdef\@cclic@image{.license/\cclic@type.\cclic@currency.png}
 }
-
-\renewcommand{\institute}[2]{
-	%% define short and long name for institute
-	\gdef\@institute@long{#1}
-	\gdef\@institute@short{#2}
-}
-
-\newcommand{\department}[2]{
-	%% define short and long name for department
-	\gdef\@department@long{#1}
-	\gdef\@department@short{#2}
-}
-
 
 \newlength{\circlesize}
 \setbeamertemplate{title page}
@@ -245,6 +238,43 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% final slide %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \makeatletter
+
+\define@key{institute}{logo}{\xdef\@institute@logo{#1}}
+\define@key{institute}{url}{\xdef\@institute@url{#1}}
+\renewcommand{\institute}[3][]{
+	%% process options
+	\setkeys{institute}{#1}
+	
+	%% generate institute URL based on short institute name
+	\ifdef{\@institute@url}{}{
+		\edef\institute@short@lowercase{\explowercase{#3}}
+		\gdef\@institute@url{https://www.\institute@short@lowercase.uni-stuttgart.de/}
+	}
+
+	%% define short and long name for institute
+	\gdef\@institute@long{#2}
+	\gdef\@institute@short{#3}
+}
+
+\define@key{department}{logo}{\xdef\@department@logo{#1}}
+\define@key{department}{url}{\xdef\@department@url{#1}}
+\newcommand{\department}[3][]{
+	%% process options
+	\setkeys{department}{#1}
+	
+	%% generate institute URL based on short institute and department name
+	\ifdef{\@department@url}{}{
+		\edef\institute@short@lowercase{\explowercase{\@institute@short}}
+		\edef\department@short@lowercase{\explowercase{#3}}
+		\gdef\@department@url{https://www.\institute@short@lowercase.uni-stuttgart.de/departments/\department@short@lowercase/}
+	}
+	
+	%% define short and long name for department
+	\gdef\@department@long{#2}
+	\gdef\@department@short{#3}
+}
+
+
 \newcommand{\speakerimage}[1]{
 	%% check if the given image exists, throw error otherwise
 	\IfFileExists{#1}{
@@ -252,6 +282,7 @@
 	}{
 		\PackageError{Title Slide Background Image}{No such file '#1'!}{}
 	}
+
 }
 
 %% if the option 'labeltxt' is present, set its value accordingly (or to default values based on current language)
@@ -366,6 +397,15 @@
         
 			\node[anchor=north west] at ([xshift=1cm, yshift=-1cm] current page.north west) {\href{\universitylink}{\pgfuseimage{unilogo_w}}};
         
+        	%% add department logo
+       		\node[circle, minimum size=1cm, path picture={\node at (path picture bounding box.center) {\ifdef{\@department@logo}{\href{\@department@url}{\includegraphics[width=1cm]{\@department@logo}}}{}};}] (department_logo) at ([xshift=-1.5cm, yshift=-1.6cm] current page.north east) {};
+        
+        	%% add institute logo
+        	\ifdef{\@institute@logo}{
+        		\node[left of=department_logo, node distance=2cm, circle, minimum size=1cm, path picture={\node at (path picture bounding box.center) {\href{\@institute@url}{\includegraphics[width=1cm]{\@institute@logo}}};}] {};
+        	}{}
+        	
+        	%% add website QR code to bottom left corner if present
 			\ifdef{\@websiteqr}{
 				\node[anchor=south west] at (current page.south west) {\@websiteqr};
 			}{}
@@ -398,8 +438,8 @@
 							\def\\{\relax\ifhmode\unskip\fi\space\ignorespaces}
 							\insertauthor
 						} \\
-						\ifdef{\@institute@long}{\@institute@long \\}{}
-						\ifdef{\@department@long}{\textit{\@department@long} \\}{}
+						\ifdef{\@institute@long}{\href{\@institute@url}{\@institute@long} \\}{}
+						\ifdef{\@department@long}{\textit{\href{\@department@url}{\@department@long}} \\}{}
  						
 						\vspace*{0.5ex}
 						

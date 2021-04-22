@@ -126,9 +126,13 @@ aspectratio=169,% for widescreen (16:9) presentations
 
 
 %% optionally specifiy intsitute and department
-%% e.g. \institute{Institute for Parallel and Distributed Systems}{IPVS}
-\institute{Institute}{Institute Abbreviation}
-\department{Department}{Department Abbreviation}
+%% required arguments: full institute name and institute abbreviation
+%% optional argument:
+%%     - logo=...: path to the logo image
+%%     - url=...: full URL to the website; if not provided, it will be tried to generate the URL automatically
+%% example: \institute[logo=path/to/logo.png, url=https://www.ipvs.uni-stuttgart.de/]{Institute for Parallel and Distributed Systems}{IPVS}
+\institute{Insitute for Parallel and Distributed Systems}{IPVS}
+\department{Simulation of Large Systems}{SGS}
 
 \phone{+49 711 685-88427}
 \fax{+49 000 000-00000}
@@ -171,7 +175,7 @@ aspectratio=169,% for widescreen (16:9) presentations
 	
 	
 	%% create final slide containing information about the speaker
-	\finalslide
+\finalslide
 	
 	%% create appendix slides
 	%% required argument: tex file containing the appendix frames
