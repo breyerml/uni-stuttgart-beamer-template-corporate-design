@@ -12,7 +12,7 @@ aspectratio=169,% for widescreen (16:9) presentations
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% custom packages and commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
+% TODO: look at correct includes
 % language and encodings
 \usepackage[english]{babel}
 
@@ -20,7 +20,7 @@ aspectratio=169,% for widescreen (16:9) presentations
 \usepackage{tikz}
 \usetikzlibrary{shapes, arrows.meta, positioning, overlay-beamer-styles, decorations.pathreplacing}
 
-% minted
+% minted: needs Python Pygments and -shell-escape as command line option in order to compile
 \usepackage{minted}
 \setminted{
 	linenos,
@@ -35,6 +35,9 @@ aspectratio=169,% for widescreen (16:9) presentations
 	per-mode=symbol,
 	binary-units=true,
 }
+
+% citation and bibliography
+\usepackage[backend=biber, style=alphabetic, natbib=true, useprefix=true]{biblatex}
 
 % define argmin and argmax as math operators
 \usepackage{amsmath}
@@ -64,7 +67,6 @@ aspectratio=169,% for widescreen (16:9) presentations
 \usepackage{pgf}
 \usepackage{todonotes}
 \usepackage{xcolor}
-\usepackage{xurl}
 
 \usepackage{etoolbox}
 \usepackage{iftex}
@@ -106,37 +108,55 @@ aspectratio=169,% for widescreen (16:9) presentations
 
 
 
-
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\mode<presentation>{\usetheme{uniS}}
+\usetheme[
+	totalframenumber, 
+	sectionslide, 
+%	sectiontoc,
+]{uniS}
 
-% TODO: customize
-% specify necessary and optional information
+
+% icons can be disabled with the optional [usetxt] option
+
+% specify mandatory information
 \title[Title footer]{Title}
 \author[Author footer]{Author}
+\email{Marcel.Breyer@ipvs.uni-stuttgart.de}
 
-\institute[.logos/ipvs.png]{Institute for Parallel and Distributed Systems}{IPVS}
-\department{Scientific Computing}{SC}
 
-% enable icons with optional parameter [useicon]
-\email{example@email.com}
-%\phone{+49 711 685-00000}
-%\fax{-}
+%% optionally specifiy intsitute and department
+%% e.g. \institute[IPVS]{Institute for Parallel and Distributed Systems}
+\institute[Institute footer]{Institute}
+\department[Department footer]{Department}
+
+\phone{+49 711 685-88427}
+\fax{-}
+\address{Universitätsstraße 38}{70569 Stuttgart, Germany}{2.164}
+\officehours{on appointment}
+\website{https://www.ipvs.uni-stuttgart.de/institute/team/Breyer/}
+\orcid{0000-0000-0000-0000}
 
 %\speakerimage{figures/speaker.jpg}
+%% optionally enable a background image on title slide
 %\backgroundimage{figures/bg.jpg}
-%\bibresource{bibliography.bib}
+
+%\addbibresource{bibliography.bib}
 
 
+%% enable "Creative Common License" badged on title slide (https://creativecommons.org/)
+%% supported licenses (required argument): by, by-nc, by-nc-nd, by-nc-na, by-nd, by-sa, cc0 (cc-zero)
+%% optional arguments: 
+%%     - version=4.0|3.0|2.5|2.0|1.0: set the CC license version (default: 4.0) for the url
+%%     - currency=EUR|USD: change the currecny icon (default: EUR) in the CC license badget
+%% example: \cclicense[version=4.0, currency=EUR]{by-nc-nd}
+\cclicense{by-nc-nd}
 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% slides %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
-	
     % TITLE + TABLE OF CONTENTS
 	\titleslide
 	\tocslide    % optional: [frametitle]
@@ -144,12 +164,26 @@ aspectratio=169,% for widescreen (16:9) presentations
 	
 	% CONTENT
 	\input{content/content}
-	% TODO: add content
 	
 	
-	% FINAL SLIDE + APPENDIX + BIBLIOGRAPHY
+	
+	%% create final slide containing information about the speaker
 	\finalslide
-%	\appendixslide{content/appendix.tex}
-%	\bibliographyslide    % optional: [frametitle]
+	
+	%% create appendix slides
+	%% required argument: tex file containing the appendix frames
+	%% optional arguments:
+	%%     - section=...: adds a section page at the beginning (disabling section numbers) with the given name
+	%%     - mode=beamer|handout: changes the current overlay mode, default based on the currently set value
+	%% example: \appendixslides[section=Appendix, mode=handout]{content/appendix}
+%	\appendixslides{content/appendix}
+
+	%% create slide(s) containing the bibliography entries
+	%% optional arguments:
+	%%     - title=...: changes the title, default dependent on set language
+	%%     - cite=all|cited: 'all' displays all entries from the bibliography file, 'cited' (default) only displays those entrires previously referenced
+	%%     - style=plain|footer: 'plain' removes the footer, while 'footer' (default) preserves it (including frame numbers)
+	%% example: \bibliographyslide[title=Additional Resources, cite=all, style=plain]
+%	\bibliographyslide
 
 \end{document}
