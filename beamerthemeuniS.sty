@@ -54,9 +54,11 @@
 \usepackage{phonenumbers}  %% correctly typeset phone numbers
 \usepackage{qrcode}  %% create QR codes
 \usepackage{tikz}
+\usetikzlibrary{positioning}
 \usepackage{xifthen}  %% interal logic
 \usepackage{fontawesome5}  %% icons for final slide
 \usepackage{tabularx}  %% fixed width table for last slide
+\usepackage{makecell}  %% newlines in table cells
 
 %% fix some latex quirks
 \usepackage{xspace}
@@ -299,7 +301,7 @@
 \define@cmdkey{fax}{labeltxt}[\iflanguage{ngerman}{Fax}{fax}]{}
 %% if the option 'labeltxt' isn't present, set an icon
 \presetkeys{fax}{labeltxt=\faIcon{fax}}{}
-\renewcommand{\fax}[2][]{
+\newcommand{\fax}[2][]{
 	%% process options
 	\setkeys{fax}{#1}
 	

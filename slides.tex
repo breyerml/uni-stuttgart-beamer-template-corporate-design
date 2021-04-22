@@ -3,108 +3,19 @@
 % !TeX root = slides.tex
 
 
-\RequirePackage[l2tabu, orthodox]{nag}
 \documentclass[11pt, t, usernames, dvipsnames, 
-aspectratio=169,% for widescreen (16:9) presentations
-%aspectratio=43,% for traditional (4:3) presentations
-%handout%
+	aspectratio=169, %% for widescreen (16:9) presentations
+%	aspectratio=43,  %% for traditional (4:3) presentations
+%	handout          %% for beamer handout mode
 ]{beamer}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% custom packages and commands %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% TODO: look at correct includes
-% language and encodings
+%% language
 \usepackage[english]{babel}
 
-% TikZ
-\usepackage{tikz}
-\usetikzlibrary{shapes, arrows.meta, positioning, overlay-beamer-styles, decorations.pathreplacing}
-
-% minted: needs Python Pygments and -shell-escape as command line option in order to compile
-\usepackage{minted}
-\setminted{
-	linenos,
-	tabsize=3,
-	fontsize=\small
-}
-\newcommand{\cppinline}[1]{\mintinline[breaklines]{c++}{#1}}
-
-% SIunitx
-\usepackage[free-standing-units]{siunitx}
-\sisetup{
-	per-mode=symbol,
-	binary-units=true,
-}
-
-% citation and bibliography
-\usepackage[backend=biber, style=alphabetic, natbib=true, useprefix=true]{biblatex}
-
-% define argmin and argmax as math operators
-\usepackage{amsmath}
-\DeclareMathOperator*{\argmin}{arg\,min}
-\DeclareMathOperator*{\argmax}{arg\,max}
-
-% define ceil and floor
-\usepackage{mathtools}
-\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
-\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
-
-
-% Others
-\usepackage{booktabs}
-\usepackage{makecell}
-\usepackage{multicol}
-\usepackage{multirow}
-
-\usepackage{cancel}
-\usepackage[useregional]{datetime2} 	% useregional=numeric
-\usepackage{marvosym}
-\usepackage{physics}
-
-\usepackage{glossaries}
-\usepackage{hyperref}
-\usepackage{pgf}
-\usepackage{todonotes}
-% default use inline todos
-\presetkeys{todonotes}{inline}{}
-\setlength {\marginparwidth }{2cm} 
-\usepackage{xcolor}
-
-\usepackage{etoolbox}
-\usepackage{iftex}
-\usepackage{import}
-\usepackage{xspace}
-
-
-\makeatletter
-% include pgf plots
-\newcommand{\includepgf}[2][\textwidth]{
-	\begingroup
-	\catcode`\_=12
-	\filename@parse{#2}
-	\resizebox{#1}{!}{\import{\filename@area}{\filename@base.pgf}}
-	\endgroup
-}
-\makeatother
-
-% add reference to image
-\newcommand{\photocredit}[1]{%
-	\begingroup
-	\renewcommand\thefootnote{}\footnote{\tiny Photo credit: #1}%
-	\addtocounter{footnote}{-1}%
-	\endgroup
-}
-
-% set fontsize to explicit value (in pt)
-\newcommand{\setfontsize}[1]{\fontsize{#1pt}{1.2\dimexpr#1pt\relax}\selectfont}
-
-% patch marvosym right arrow
-\appto{\MVRightarrow}{\xspace}
-\appto{\MVRightArrow}{\xspace}
-
-% better C++ typeset
-\newcommand{\cpp}[1][]{\texttt{C++#1}\xspace}
-
+%% citation and bibliography (needed for \bibliographyslide, can bed savely removed if not used)
+%\usepackage[backend=biber, style=alphabetic, natbib=true, useprefix=true]{biblatex}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -143,7 +54,7 @@ aspectratio=169,% for widescreen (16:9) presentations
 \website{https://www.ipvs.uni-stuttgart.de/institute/team/Breyer/}
 \orcid{0000-0000-0000-0000}
 
-
+% TODO: 
 %\speakerimage{figures/speaker.jpg}
 
 
