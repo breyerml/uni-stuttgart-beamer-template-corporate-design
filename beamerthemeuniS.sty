@@ -233,23 +233,19 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% table of contents slide %%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\makeatletter
+%% set frame title if requested
+\define@cmdkey{toc}{title}{}
+
 \newcommand{\tocslide}[1][]{
-	\ifthenelse{\isempty{#1}}{
-		%% no title given: set default value according to language ngerman vs english
-		\iflanguage{ngerman}{
-			\def\toctitle{Übersicht}
-		}{
-			\def\toctitle{Overview}
-		}
-	}{
-		%% set provided title
-		\def\toctitle{#1}
-	}
+	%% process options, set default frame title
+	\setkeys{toc}{title=\iflanguage{ngerman}{Übersicht}{Overview}, #1}
 	
-	\begin{frame}{\toctitle}
+	\begin{frame}{\cmdKV@toc@title}
 		\tableofcontents
 	\end{frame}
 }
+\makeatother
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

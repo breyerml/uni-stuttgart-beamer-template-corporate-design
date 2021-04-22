@@ -157,7 +157,12 @@ aspectratio=169,% for widescreen (16:9) presentations
 \begin{document}
     % TITLE + TABLE OF CONTENTS
 	\titleslide
-	\tocslide    % optional: [frametitle]
+	
+	%% create table of contents slide
+	%% optional argument: 
+	%%     - title=...: changes the title, default dependent on set language
+	%% example: \tocslide[title=Table of Contents]
+	\tocslide
 	
 	
 	% CONTENT
