@@ -269,7 +269,7 @@
 	%% process options
 	\setkeys{email}{#1}
 	
-	\xdef\@emailicon{\cmdKV@email@labeltxt}
+	\xdef\@email@icon{\cmdKV@email@labeltxt}
 	\gdef\@email{\href{mailto:#2}{#2}}
 }
 
@@ -281,7 +281,7 @@
 	%% process options
 	\setkeys{phone}{#1}
 	
-	\xdef\@phoneicon{\cmdKV@phone@labeltxt}
+	\xdef\@phone@icon{\cmdKV@phone@labeltxt}
 	\gdef\@phone{\phonenumber{#2}}
 }
 
@@ -293,7 +293,7 @@
 	%% process options
 	\setkeys{fax}{#1}
 	
-	\xdef\@faxicon{\cmdKV@fax@labeltxt}
+	\xdef\@fax@icon{\cmdKV@fax@labeltxt}
 	\gdef\@fax{\phonenumber{#2}}
 }
 
@@ -305,7 +305,7 @@
 	%% process options
 	\setkeys{address}{#1}
 	
-	\xdef\@addressicon{\cmdKV@address@labeltxt}
+	\xdef\@address@icon{\cmdKV@address@labeltxt}
 	\gdef\@street{#2}
 	\gdef\@zip{#3}
 	\gdef\@address{\href{http://maps.google.com/?q=#2+#3}{\makecell[tl]{#2\\#3\\\iflanguage{ngerman}{Raum}{Room}: #4}}}
@@ -319,7 +319,7 @@
 	%% process options
 	\setkeys{officehours}{#1}
 	
-	\xdef\@officehoursicon{\cmdKV@officehours@labeltxt}
+	\xdef\@officehours@icon{\cmdKV@officehours@labeltxt}
 	\gdef\@officehours{#2}
 }
 
@@ -331,7 +331,7 @@
 	%% process options
 	\setkeys{website}{#1}
 	
-	\xdef\@websiteicon{\cmdKV@website@labeltxt}
+	\xdef\@website@icon{\cmdKV@website@labeltxt}
 	\gdef\@website{\scriptsize\url{#2}}
 	%% create QR code to website
 	\gdef\@websiteqr{\textcolor{white}{\qrcode[height=1.25cm]{#2}}}
@@ -343,10 +343,10 @@
 	%% "We do not currently allow references to authorized ORCID iDs without using the iD icon."
 	\ifPDFTeX
 		%% include image if using pdf latex
-		\gdef\@orcidicon{\includegraphics[width=9pt]{.logos/ORCIDiD.pdf}}
+		\gdef\@orcid@icon{\includegraphics[width=9pt]{.logos/ORCIDiD.pdf}}
 	\else
 		%% include academicsicon otherwise
-		\gdef\@orcidicon{\tikz\node[circle, fill=white, inner sep=-1.5] at (0, 0) {\textcolor[HTML]{A6CE39}{\aiOrcid}};}
+		\gdef\@orcid@icon{\tikz\node[circle, fill=white, inner sep=-1.5] at (0, 0) {\textcolor[HTML]{A6CE39}{\aiOrcid}};}
 	\fi
 	
 	\gdef\@orcid{\href{https://orcid.org/#1}{#1}}
@@ -420,13 +420,13 @@
 							\def\arraystretch{1.2}
 							\footnotesize
 							\begin{tabularx}{\columnwidth}{r X}
-								\@emailicon & \@email \\
-								\addoptionalinfo{\@phoneicon}{\@phone}
-								\addoptionalinfo{\@faxicon}{\@fax}
-								\addoptionalinfo{\@addressicon}{\@address}
-								\addoptionalinfo{\@officehoursicon}{\@officehours}
-								\addoptionalinfo{\@websiteicon}{\@website}
-								\addoptionalinfo{\@orcidicon}{\@orcid}
+								\@email@icon & \@email \\
+								\addoptionalinfo{\@phone@icon}{\@phone}
+								\addoptionalinfo{\@fax@icon}{\@fax}
+								\addoptionalinfo{\@address@icon}{\@address}
+								\addoptionalinfo{\@officehours@icon}{\@officehours}
+								\addoptionalinfo{\@website@icon}{\@website}
+								\addoptionalinfo{\@orcid@icon}{\@orcid}
 							\end{tabularx}
 						}
 					\end{beamercolorbox}
