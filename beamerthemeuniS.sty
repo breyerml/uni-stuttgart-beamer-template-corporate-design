@@ -261,66 +261,77 @@
 	}
 }
 
-\newcommand{\email}[2][useicon]{
-	%% check if a correct option has been provided
-	\IfStrEqCase{#1}{% 
-		{useicon}{\gdef\@emailicon{\faIcon[regular]{envelope}}}
-		{usetxt}{\gdef\@emailicon{\iflanguage{ngerman}{E-Mail}{email}}}}
-		[\PackageError{email}{unknown option!}{}]
+%% if the option 'labeltxt' is present, set its value accordingly (or to default values based on current language)
+\define@cmdkey{email}{labeltxt}[\iflanguage{ngerman}{E-Mail}{email}]{}
+%% if the option 'labeltxt' isn't present, set an icon
+\presetkeys{email}{labeltxt=\faIcon[regular]{envelope}}{}
+\newcommand{\email}[2][]{
+	%% process options
+	\setkeys{email}{#1}
 	
+	\xdef\@emailicon{\cmdKV@email@labeltxt}
 	\gdef\@email{\href{mailto:#2}{#2}}
 }
 
-\newcommand{\phone}[2][useicon]{
-	%% check if a correct option has been provided
-	\IfStrEqCase{#1}{% 
-		{useicon}{\gdef\@phoneicon{\faIcon{phone}}}
-		{usetxt}{\gdef\@phoneicon{\iflanguage{ngerman}{Telefon}{phone}}}}
-		[\PackageError{phone}{unknown option!}{}]
+%% if the option 'labeltxt' is present, set its value accordingly (or to default values based on current language)
+\define@cmdkey{phone}{labeltxt}[\iflanguage{ngerman}{Telefon}{phone}]{}
+%% if the option 'labeltxt' isn't present, set an icon
+\presetkeys{phone}{labeltxt=\faIcon{phone}}{}
+\newcommand{\phone}[2][]{
+	%% process options
+	\setkeys{phone}{#1}
 	
+	\xdef\@phoneicon{\cmdKV@phone@labeltxt}
 	\gdef\@phone{\phonenumber{#2}}
 }
 
-\renewcommand{\fax}[2][useicon]{
-	%% check if a correct option has been provided
-	\IfStrEqCase{#1}{% 
-		{useicon}{\gdef\@faxicon{\faIcon{fax}}}
-		{usetxt}{\gdef\@faxicon{\iflanguage{ngerman}{Fax}{fax}}}}
-		[\PackageError{fax}{unknown option!}{}]
+%% if the option 'labeltxt' is present, set its value accordingly (or to default values based on current language)
+\define@cmdkey{fax}{labeltxt}[\iflanguage{ngerman}{Fax}{fax}]{}
+%% if the option 'labeltxt' isn't present, set an icon
+\presetkeys{fax}{labeltxt=\faIcon{fax}}{}
+\renewcommand{\fax}[2][]{
+	%% process options
+	\setkeys{fax}{#1}
 	
-	\gdef\@fax{#2}
+	\xdef\@faxicon{\cmdKV@fax@labeltxt}
+	\gdef\@fax{\phonenumber{#2}}
 }
 
-
-\newcommand{\address}[4][useicon]{
-	%% check if a correct option has been provided
-	\IfStrEqCase{#1}{% 
-		{useicon}{\gdef\@addressicon{\faIcon{map-marker-alt}}}
-		{usetxt}{\gdef\@addressicon{\iflanguage{ngerman}{Adresse}{address}}}}
-		[\PackageError{address}{unknown option!}{}]
-		
+%% if the option 'labeltxt' is present, set its value accordingly (or to default values based on current language)
+\define@cmdkey{address}{labeltxt}[\iflanguage{ngerman}{Adresse}{address}]{}
+%% if the option 'labeltxt' isn't present, set an icon
+\presetkeys{address}{labeltxt=\faIcon{map-marker-alt}}{}
+\newcommand{\address}[4][]{
+	%% process options
+	\setkeys{address}{#1}
+	
+	\xdef\@addressicon{\cmdKV@address@labeltxt}
 	\gdef\@street{#2}
 	\gdef\@zip{#3}
 	\gdef\@address{\href{http://maps.google.com/?q=#2+#3}{\makecell[tl]{#2\\#3\\\iflanguage{ngerman}{Raum}{Room}: #4}}}
 }
 
-\newcommand{\officehours}[2][useicon]{
-	%% check if a correct option has been provided
-	\IfStrEqCase{#1}{% 
-		{useicon}{\gdef\@officehoursicon{\faIcon[regular]{calendar-check}}}
-		{usetxt}{\gdef\@officehoursicon{\iflanguage{ngerman}{Sprechstunden}{office hours}}}}
-		[\PackageError{officehours}{unknown option!}{}]
+%% if the option 'labeltxt' is present, set its value accordingly (or to default values based on current language)
+\define@cmdkey{officehours}{labeltxt}[\iflanguage{ngerman}{Sprechstunden}{office hours}]{}
+%% if the option 'labeltxt' isn't present, set an icon
+\presetkeys{officehours}{labeltxt=\faIcon[regular]{calendar-check}}{}
+\newcommand{\officehours}[2][]{
+	%% process options
+	\setkeys{officehours}{#1}
 	
+	\xdef\@officehoursicon{\cmdKV@officehours@labeltxt}
 	\gdef\@officehours{#2}
 }
 
-\newcommand{\website}[2][useicon]{
-	%% check if a correct option has been provided
-	\IfStrEqCase{#1}{% 
-		{useicon}{\gdef\@websiteicon{\faIcon{link}}}
-		{usetxt}{\gdef\@websiteicon{\iflanguage{ngerman}{Website}{website}}}}
-		[\PackageError{website}{unknown option!}{}]
+%% if the option 'labeltxt' is present, set its value accordingly (or to default values based on current language)
+\define@cmdkey{website}{labeltxt}[\iflanguage{ngerman}{Website}{website}]{}
+%% if the option 'labeltxt' isn't present, set an icon
+\presetkeys{website}{labeltxt=\faIcon{link}}{}
+\newcommand{\website}[2][]{
+	%% process options
+	\setkeys{website}{#1}
 	
+	\xdef\@websiteicon{\cmdKV@website@labeltxt}
 	\gdef\@website{\scriptsize\url{#2}}
 	%% create QR code to website
 	\gdef\@websiteqr{\textcolor{white}{\qrcode[height=1.25cm]{#2}}}
