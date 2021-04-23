@@ -1,5 +1,4 @@
 % !TeX root = slides.tex
-% TODO: remove magic comments
 % Copyright 2017 by Christian Senger <senger@inue.uni-stuttgart.de>
 %
 % This file may be distributed and/or modified
@@ -344,19 +343,27 @@
 	\setkeys{website}{#1}
 	
 	\xdef\@website@icon{\cmdKV@website@labeltxt}
-	\gdef\@website{\scriptsize\url{#2}}
+	\gdef\@website{\url{#2}}
 	%% create QR code to website
 	\gdef\@websiteqr{\textcolor{white}{\qrcode[height=1.25cm]{#2}}}
 }
 
-\newcommand{\orcid}[1]{
-	% TODO: have a closer look at guidlines
-	%% https://info.orcid.org/brand-guidelines/:
+%% switch between full and compact type when displaying the ORCID iD
+\define@choicekey*{appendix}{mode}[\val]{beamer, handout}{\xdef\beamer@currentmode{\val}}
+\define@choicekey{orcid}{type}[\val\nr]{full, compact}{\edef\orchid@type{\val}}
+\newcommand{\orcid}[2][]{
+	%% https://info.orcid.org/brand-guidelines/
 	%% "We do not currently allow references to authorized ORCID iDs without using the iD icon."
+	\setkeys{orcid}{type=full, #1}
 	
-	%% include ORCIDiD icon as pdf
+	%% include ORCID iD icon as pdf
 	\gdef\@orcid@icon{\raisebox{-1.25pt}{\includegraphics[width=9pt]{.logos/ORCIDiD.pdf}}}
-	\gdef\@orcid{\href{https://orcid.org/#1}{#1}}
+	\ifthenelse{\equal{\orchid@type}{full}}{
+		\gdef\@orcid{\href{https://orcid.org/#2}{\url{https://orcid.org/#2}}}
+	}{
+		\gdef\@orcid{\href{https://orcid.org/#2}{#2}}
+	}
+	
 }
 
 \newcommand{\addoptionalinfo}[2]{
