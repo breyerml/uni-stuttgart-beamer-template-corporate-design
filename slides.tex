@@ -18,6 +18,89 @@
 %\usepackage[backend=biber, style=alphabetic, natbib=true, useprefix=true]{biblatex}
 
 
+
+%% TikZ
+\usepackage{tikz}
+\usetikzlibrary{shapes, arrows.meta, positioning, overlay-beamer-styles, decorations.pathreplacing}
+
+%% minted: needs Python Pygments and -shell-escape as command line option in order to compile
+\usepackage{minted}
+\setminted{
+	linenos,
+	tabsize=3,
+	fontsize=\small
+}
+\newcommand{\cppinline}[1]{\mintinline[breaklines]{c++}{#1}}
+
+%% SIunitx
+\usepackage[free-standing-units]{siunitx}
+\sisetup{
+	per-mode=symbol,
+	binary-units=true,
+}
+
+%% todonotes for slides
+\usepackage{todonotes}
+\presetkeys{todonotes}{inline}{}
+\setlength{\marginparwidth}{2cm}
+
+%% define argmin and argmax as math operators
+\usepackage{amsmath}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+%% define ceil and floor
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\floor}{\lfloor}{\rfloor}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+
+%% Others
+\usepackage{booktabs}
+\usepackage{makecell}
+\usepackage{multicol}
+\usepackage{multirow}
+
+\usepackage{cancel}
+\usepackage[useregional]{datetime2} 	%% useregional=numeric
+\usepackage{physics}
+
+\usepackage{glossaries}
+\usepackage{hyperref}
+\usepackage{pgf}
+\usepackage{xcolor}
+
+\usepackage{etoolbox}
+\usepackage{iftex}
+\usepackage{import}
+\usepackage{xspace}
+
+
+\makeatletter
+%% include pgf plots
+\newcommand{\includepgf}[2][\textwidth]{
+	\begingroup
+	\catcode`\_=12
+	\filename@parse{#2}
+	\resizebox{#1}{!}{\import{\filename@area}{\filename@base.pgf}}
+	\endgroup
+}
+\makeatother
+
+%% add reference to image
+\newcommand{\photocredit}[1]{%
+	\begingroup
+	\renewcommand\thefootnote{}\footnote{\tiny Photo credit: #1}%
+	\addtocounter{footnote}{-1}%
+	\endgroup
+}
+
+%% set fontsize to explicit value (in pt)
+\newcommand{\setfontsize}[1]{\fontsize{#1pt}{1.2\dimexpr#1pt\relax}\selectfont}
+
+%% better C++ typeset
+\newcommand{\cpp}[1][]{\texttt{C++#1}\xspace}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% setup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %% set theme options
