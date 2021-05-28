@@ -49,6 +49,7 @@
 \usepackage{appendixnumberbeamer}
 \usepackage{etoolbox}  %% interal logic
 \usepackage{phonenumbers}  %% correctly typeset phone numbers
+\setphonenumbers{foreign}
 \usepackage{qrcode}  %% create QR codes
 \usepackage{tikz}
 \usetikzlibrary{positioning}
@@ -291,7 +292,7 @@
 	\setkeys{phone}{#1}
 	
 	\xdef\@phone@icon{\cmdKV@phone@labeltxt}
-	\gdef\@phone{\phonenumber{#2}}
+	\gdef\@phone{\phonenumber[country=DE]{#2}}
 }
 
 %% if the option 'labeltxt' is present, set its value accordingly (or to default values based on current language)
@@ -303,7 +304,7 @@
 	\setkeys{fax}{#1}
 	
 	\xdef\@fax@icon{\cmdKV@fax@labeltxt}
-	\gdef\@fax{\phonenumber{#2}}
+	\gdef\@fax{\phonenumber[country=DE]{#2}}
 }
 
 %% if the option 'labeltxt' is present, set its value accordingly (or to default values based on current language)
